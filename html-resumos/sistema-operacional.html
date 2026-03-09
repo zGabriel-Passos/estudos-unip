@@ -1,0 +1,716 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Resumo - Sistemas Operacionais Aula 1</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #dc2626;
+            --color-accent: #f97316;
+            --color-bg: #fafafa;
+            --color-bg-subtle: #ffffff;
+            --color-text: #171717;
+            --color-text-muted: #737373;
+            --color-border: #e5e5e5;
+            --accent-rgb: 249, 115, 22;
+            
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.12);
+            --shadow-lg: 0 12px 40px rgba(0,0,0,0.18);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Nunito', sans-serif;
+            color: var(--color-text);
+            background: var(--color-bg);
+            line-height: 1.6;
+        }
+        
+        h1, h2, h3 {
+            font-family: 'Bebas Neue', sans-serif;
+            font-weight: 400;
+            line-height: 1.1;
+            letter-spacing: 1px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        /* Navbar */
+        nav {
+            position: sticky;
+            top: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 2px solid var(--color-primary);
+            padding: 20px 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 2rem;
+            color: var(--color-primary);
+            letter-spacing: 2px;
+        }
+        
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+        }
+        
+        .nav-links a {
+            color: var(--color-text);
+            text-decoration: none;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.875rem;
+            letter-spacing: 0.5px;
+            position: relative;
+            transition: color 0.2s;
+        }
+        
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 3px;
+            background: var(--color-accent);
+            transition: width 0.2s ease;
+        }
+        
+        .nav-links a:hover {
+            color: var(--color-accent);
+        }
+        
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+        
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+        }
+        
+        .hamburger span {
+            width: 28px;
+            height: 3px;
+            background: var(--color-primary);
+            transition: all 0.3s;
+        }
+        
+        /* Hero */
+        .hero {
+            padding: 100px 0 80px;
+            background: linear-gradient(135deg, #dc2626 0%, #f97316 100%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 600px;
+            height: 600px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+        
+        .hero-content {
+            text-align: center;
+            max-width: 900px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .badge {
+            display: inline-block;
+            padding: 10px 20px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: var(--radius-full);
+            font-size: 0.875rem;
+            font-weight: 700;
+            margin-bottom: 24px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .hero h1 {
+            font-size: 4.5rem;
+            margin-bottom: 24px;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.2);
+        }
+        
+        .hero p {
+            font-size: 1.25rem;
+            margin-bottom: 32px;
+            opacity: 0.95;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 18px 40px;
+            border-radius: var(--radius-md);
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn-primary {
+            background: white;
+            color: var(--color-primary);
+            box-shadow: 0 8px 24px rgba(0,0,0,0.2);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(0,0,0,0.3);
+        }
+        
+        /* Section */
+        section {
+            padding: 80px 0;
+        }
+        
+        .section-header {
+            text-align: center;
+            max-width: 700px;
+            margin: 0 auto 64px;
+        }
+        
+        .section-header h2 {
+            font-size: 3.5rem;
+            margin-bottom: 16px;
+            color: var(--color-primary);
+        }
+        
+        .section-header p {
+            font-size: 1.125rem;
+            color: var(--color-text-muted);
+        }
+        
+        /* Timeline */
+        .timeline {
+            position: relative;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+        
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 4px;
+            height: 100%;
+            background: var(--color-border);
+        }
+        
+        .timeline-item {
+            position: relative;
+            margin-bottom: 48px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .timeline-item:nth-child(odd) {
+            flex-direction: row;
+        }
+        
+        .timeline-item:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+        
+        .timeline-content {
+            width: 45%;
+            background: white;
+            padding: 24px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            border: 2px solid var(--color-border);
+        }
+        
+        .timeline-marker {
+            width: 40px;
+            height: 40px;
+            background: var(--color-accent);
+            border-radius: 50%;
+            position: absolute;
+            left: 50%;
+            transform: translateX(-50%);
+            display: grid;
+            place-items: center;
+            color: white;
+            font-weight: 700;
+            box-shadow: 0 0 0 8px var(--color-bg);
+        }
+        
+        .timeline-content h3 {
+            font-size: 1.75rem;
+            margin-bottom: 8px;
+            color: var(--color-primary);
+        }
+        
+        .timeline-content p {
+            color: var(--color-text-muted);
+        }
+        
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 32px;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 32px;
+            border-radius: var(--radius-lg);
+            border: 2px solid var(--color-border);
+            transition: all 0.3s;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--color-accent);
+        }
+        
+        .icon-container {
+            width: 64px;
+            height: 64px;
+            border-radius: var(--radius-lg);
+            background: linear-gradient(135deg, var(--color-accent), var(--color-primary));
+            display: grid;
+            place-items: center;
+            margin-bottom: 20px;
+            box-shadow: 0 8px 24px rgba(var(--accent-rgb), 0.4);
+        }
+        
+        .icon-container svg {
+            width: 32px;
+            height: 32px;
+            stroke: white;
+            fill: none;
+            stroke-width: 2.5;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.75rem;
+            margin-bottom: 12px;
+            color: var(--color-primary);
+        }
+        
+        .feature-card p {
+            color: var(--color-text-muted);
+            line-height: 1.7;
+        }
+        
+        /* Content Section */
+        .content-section {
+            background: white;
+        }
+        
+        /* Code Block */
+        .code-block {
+            background: #171717;
+            color: #fafafa;
+            padding: 24px;
+            border-radius: var(--radius-lg);
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
+            line-height: 1.8;
+            border: 2px solid var(--color-border);
+        }
+        
+        /* Comparison */
+        .comparison {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 32px;
+        }
+        
+        .comparison-card {
+            background: white;
+            padding: 32px;
+            border-radius: var(--radius-lg);
+            border: 2px solid var(--color-border);
+        }
+        
+        .comparison-card h3 {
+            font-size: 2rem;
+            margin-bottom: 16px;
+            color: var(--color-primary);
+        }
+        
+        .comparison-card ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .comparison-card li {
+            padding: 12px 0;
+            border-bottom: 1px solid var(--color-border);
+            display: flex;
+            align-items: start;
+            gap: 12px;
+        }
+        
+        .comparison-card li:last-child {
+            border-bottom: none;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--color-primary);
+            color: white;
+            padding: 48px 0;
+            text-align: center;
+        }
+        
+        footer p {
+            opacity: 0.9;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: white;
+                flex-direction: column;
+                padding: 24px;
+                border-bottom: 2px solid var(--color-primary);
+                box-shadow: var(--shadow-md);
+            }
+            
+            .nav-links.active {
+                display: flex;
+            }
+            
+            .hamburger {
+                display: flex;
+            }
+            
+            .hero h1 {
+                font-size: 3rem;
+            }
+            
+            .timeline::before {
+                left: 20px;
+            }
+            
+            .timeline-item {
+                flex-direction: row !important;
+                padding-left: 60px;
+            }
+            
+            .timeline-content {
+                width: 100%;
+            }
+            
+            .timeline-marker {
+                left: 20px;
+            }
+            
+            .comparison {
+                grid-template-columns: 1fr;
+            }
+            
+            .features-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav>
+        <div class="container">
+            <div class="nav-content">
+                <div class="logo">⚙️ SISTEMAS OPERACIONAIS</div>
+                <ul class="nav-links" id="navLinks">
+                    <li><a href="#conceito">Conceito</a></li>
+                    <li><a href="#historia">História</a></li>
+                    <li><a href="#tipos">Tipos</a></li>
+                    <li><a href="#multiprog">Multiprogramação</a></li>
+                </ul>
+                <div class="hamburger" onclick="toggleMenu()">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <span class="badge">Aula 1 - Resumo</span>
+                <h1>SISTEMAS OPERACIONAIS</h1>
+                <p>Da primeira geração com válvulas até os sistemas móveis modernos: entenda a evolução e os tipos de sistemas operacionais.</p>
+                <a href="#conceito" class="btn btn-primary">Explorar conteúdo</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Conceito -->
+    <section id="conceito">
+        <div class="container">
+            <div class="section-header">
+                <h2>O QUE É UM SO?</h2>
+                <p>Duas funções essenciais não relacionadas</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="icon-container">
+                        <svg viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+                    </div>
+                    <h3>FORNECER ABSTRAÇÕES</h3>
+                    <p>Oferecer aos programadores um conjunto de recursos abstratos e limpos em vez de recursos confusos de hardware.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="icon-container">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M12 1v6m0 6v6"/><path d="m4.93 4.93 4.24 4.24m5.66 5.66 4.24 4.24"/><path d="m1 12h6m6 0h6"/><path d="m4.93 19.07 4.24-4.24m5.66-5.66 4.24-4.24"/></svg>
+                    </div>
+                    <h3>GERENCIAR HARDWARE</h3>
+                    <p>Gerenciar os recursos de hardware do sistema: CPU, memória, disco e dispositivos de E/S.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- História -->
+    <section id="historia" class="content-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>HISTÓRIA DOS SO</h2>
+                <p>5 gerações de evolução tecnológica</p>
+            </div>
+            
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>1ª GERAÇÃO (1945-1955)</h3>
+                        <p><strong>Válvulas</strong> — ~20.000 válvulas, sem SO. Programador operava diretamente a máquina.</p>
+                    </div>
+                    <div class="timeline-marker">1</div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>2ª GERAÇÃO (1955-1965)</h3>
+                        <p><strong>Transistores e Batch</strong> — Mainframes, cartões perfurados, processamento em lote.</p>
+                    </div>
+                    <div class="timeline-marker">2</div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>3ª GERAÇÃO (1965-1980)</h3>
+                        <p><strong>Circuitos Integrados</strong> — IBM 360, multiprogramação, timesharing, UNIX.</p>
+                    </div>
+                    <div class="timeline-marker">3</div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>4ª GERAÇÃO (1980-presente)</h3>
+                        <p><strong>Computadores Pessoais</strong> — LSI, Intel 8080, MS-DOS, Windows.</p>
+                    </div>
+                    <div class="timeline-marker">4</div>
+                </div>
+                
+                <div class="timeline-item">
+                    <div class="timeline-content">
+                        <h3>5ª GERAÇÃO (1990-presente)</h3>
+                        <p><strong>Computadores Móveis</strong> — Smartphones, tablets, Android, iOS.</p>
+                    </div>
+                    <div class="timeline-marker">5</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Tipos -->
+    <section id="tipos">
+        <div class="container">
+            <div class="section-header">
+                <h2>TIPOS DE SO</h2>
+            </div>
+            
+            <div class="code-block" style="margin-bottom: 48px;">
+                    SISTEMAS OPERACIONAIS
+                            │
+            ┌───────────────┼───────────────┐
+            │               │               │
+    Monoprogramáveis  Multiprogramáveis  Múltiplos
+                            │            Processadores
+                    ┌───────┴────────┐
+                    │                │
+               Monousuário      Multiusuário
+                    │
+            ┌───────┴────────┐
+            │                │
+          Batch         Time-Sharing     Tempo Real
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <h3>MONOPROGRAMÁVEIS</h3>
+                    <p>Um programa por vez. Recursos exclusivos, baixo aproveitamento da CPU.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>MULTIPROGRAMÁVEIS</h3>
+                    <p>Vários programas compartilham recursos. Alto aproveitamento da CPU.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>BATCH</h3>
+                    <p>Sem interação do usuário. Cálculos, compilações, backups.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>TIME-SHARING</h3>
+                    <p>Fatias de tempo divididas entre processos. Cada usuário tem terminal.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>TEMPO REAL</h3>
+                    <p>Prazos rígidos (deadlines). Controle de voo, UTI, freios ABS.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <h3>MÚLTIPLOS PROCESSADORES</h3>
+                    <p>Dois ou mais processadores trabalhando em conjunto.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Multiprogramação -->
+    <section id="multiprog" class="content-section">
+        <div class="container">
+            <div class="section-header">
+                <h2>MULTIPROGRAMAÇÃO</h2>
+                <p>Memória dividida em partições, CPU alterna entre tarefas</p>
+            </div>
+            
+            <div class="code-block" style="margin-bottom: 48px;">
+┌─────────────────────────────────────────────────────┐
+│              MEMÓRIA PRINCIPAL                      │
+├─────────────────────────────────────────────────────┤
+│  Partição 1 │  Tarefa A  │ (aguardando E/S...)      │
+├─────────────────────────────────────────────────────┤
+│  Partição 2 │  Tarefa B  │ (usando CPU agora!) ◄──  │
+├─────────────────────────────────────────────────────┤
+│  Partição 3 │  Tarefa C  │ (aguardando CPU...)       │
+├─────────────────────────────────────────────────────┤
+│  Partição 4 │  Tarefa D  │ (aguardando E/S...)      │
+└─────────────────────────────────────────────────────┘
+         │
+         ▼
+  CPU ocupa quase 100% do tempo!
+  Enquanto uma tarefa espera E/S, outra usa a CPU.
+            </div>
+            
+            <div class="comparison">
+                <div class="comparison-card">
+                    <h3>FORTEMENTE ACOPLADOS</h3>
+                    <ul>
+                        <li>✓ Memória física compartilhada</li>
+                        <li>✓ Um único SO gerencia tudo</li>
+                        <li>✓ Simétricos e Assimétricos</li>
+                        <li>✓ Ex: Unix, Windows</li>
+                    </ul>
+                </div>
+                
+                <div class="comparison-card">
+                    <h3>FRACAMENTE ACOPLADOS</h3>
+                    <ul>
+                        <li>✓ Sistemas independentes conectados</li>
+                        <li>✓ Cada sistema tem seu SO</li>
+                        <li>✓ SO de Rede ou Distribuídos</li>
+                        <li>✓ Ex: Clusters, Cloud</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Estudos UNIP - Sistemas Operacionais Aula 1</p>
+        </div>
+    </footer>
+
+    <script>
+        function toggleMenu() {
+            const navLinks = document.getElementById('navLinks');
+            navLinks.classList.toggle('active');
+        }
+        
+        // Smooth scroll
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    document.getElementById('navLinks').classList.remove('active');
+                }
+            });
+        });
+    </script>
+</body>
+</html>
