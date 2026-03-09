@@ -1,0 +1,1288 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kanban - Resumos UNIP</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-primary: #3b82f6;
+            --color-accent: #8b5cf6;
+            --color-bg: #0a0a0a;
+            --color-bg-subtle: #1a1a1a;
+            --color-card: #262626;
+            --color-text: #fafafa;
+            --color-text-muted: #a3a3a3;
+            --color-border: #404040;
+            --accent-rgb: 139, 92, 246;
+            
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 16px;
+            --radius-xl: 24px;
+            
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.3);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.4);
+            --shadow-lg: 0 12px 40px rgba(0,0,0,0.6);
+        }
+        
+        [data-theme="light"] {
+            --color-primary: #2563eb;
+            --color-accent: #7c3aed;
+            --color-bg: #ffffff;
+            --color-bg-subtle: #f5f5f5;
+            --color-card: #ffffff;
+            --color-text: #171717;
+            --color-text-muted: #737373;
+            --color-border: #e5e5e5;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.08);
+            --shadow-md: 0 4px 16px rgba(0,0,0,0.12);
+            --shadow-lg: 0 12px 40px rgba(0,0,0,0.18);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'IBM Plex Sans', sans-serif;
+            color: var(--color-text);
+            background: var(--color-bg);
+            line-height: 1.6;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+        
+        h1, h2, h3 {
+            font-family: 'Space Mono', monospace;
+            font-weight: 700;
+            line-height: 1.2;
+        }
+        
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        /* Navbar */
+        nav {
+            position: sticky;
+            top: 0;
+            background: var(--color-bg-subtle);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--color-border);
+            padding: 20px 0;
+            z-index: 1000;
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-family: 'Space Mono', monospace;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--color-accent);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .nav-actions {
+            display: flex;
+            gap: 16px;
+            align-items: center;
+        }
+        
+        .theme-toggle {
+            background: var(--color-card);
+            border: 1px solid var(--color-border);
+            color: var(--color-text);
+            padding: 10px 16px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .theme-toggle:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--color-accent);
+        }
+        
+        /* Hero */
+        .hero {
+            padding: 80px 0 60px;
+            text-align: center;
+            background: var(--color-bg-subtle);
+            border-bottom: 1px solid var(--color-border);
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 16px;
+            background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .hero p {
+            font-size: 1.125rem;
+            color: var(--color-text-muted);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        /* Kanban Board */
+        .kanban-board {
+            padding: 48px 0 80px;
+            overflow-x: auto;
+        }
+        
+        .kanban-columns {
+            display: grid;
+            grid-template-columns: repeat(5, minmax(320px, 1fr));
+            gap: 24px;
+            min-width: min-content;
+        }
+        
+        .kanban-column {
+            background: var(--color-bg-subtle);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            border: 1px solid var(--color-border);
+            min-height: 600px;
+        }
+        
+        .column-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid var(--color-border);
+        }
+        
+        .column-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            display: grid;
+            place-items: center;
+            font-size: 1.25rem;
+            flex-shrink: 0;
+        }
+        
+        .column-icon.estatistica {
+            background: linear-gradient(135deg, #3b82f6, #2563eb);
+        }
+        
+        .column-icon.python {
+            background: linear-gradient(135deg, #06b6d4, #0891b2);
+        }
+        
+        .column-icon.so {
+            background: linear-gradient(135deg, #f97316, #dc2626);
+        }
+        
+        .column-icon.etica {
+            background: linear-gradient(135deg, #10b981, #059669);
+        }
+        
+        .column-icon.info {
+            background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+        }
+        
+        .column-title {
+            font-size: 1.125rem;
+            font-weight: 700;
+            color: var(--color-text);
+        }
+        
+        .column-count {
+            margin-left: auto;
+            background: var(--color-card);
+            padding: 4px 12px;
+            border-radius: var(--radius-full);
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--color-text-muted);
+            border: 1px solid var(--color-border);
+        }
+        
+        /* Cards */
+        .card {
+            background: var(--color-card);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            margin-bottom: 16px;
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        
+        .card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--color-accent);
+        }
+        
+        .card:last-child {
+            margin-bottom: 0;
+        }
+        
+        .card-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            background: rgba(var(--accent-rgb), 0.15);
+            color: var(--color-accent);
+            border-radius: var(--radius-full);
+            font-size: 0.75rem;
+            font-weight: 600;
+            margin-bottom: 12px;
+            border: 1px solid rgba(var(--accent-rgb), 0.3);
+        }
+        
+        .card h3 {
+            font-size: 1rem;
+            margin-bottom: 8px;
+            color: var(--color-text);
+        }
+        
+        .card p {
+            font-size: 0.875rem;
+            color: var(--color-text-muted);
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+        
+        .card-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        
+        .tag {
+            padding: 4px 10px;
+            background: var(--color-bg-subtle);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-sm);
+            font-size: 0.75rem;
+            color: var(--color-text-muted);
+            font-weight: 500;
+        }
+        
+        .card-link {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--color-accent);
+            font-size: 0.875rem;
+            font-weight: 600;
+            text-decoration: none;
+            margin-top: 12px;
+            transition: gap 0.2s;
+        }
+        
+        .card-link:hover {
+            gap: 10px;
+        }
+        
+        /* Footer */
+        footer {
+            background: var(--color-bg-subtle);
+            border-top: 1px solid var(--color-border);
+            padding: 48px 0;
+            text-align: center;
+        }
+        
+        footer p {
+            color: var(--color-text-muted);
+        }
+        
+        /* Responsive */
+        @media (max-width: 1400px) {
+            .kanban-columns {
+                grid-template-columns: repeat(3, minmax(320px, 1fr));
+            }
+        }
+        
+        @media (max-width: 1024px) {
+            .kanban-columns {
+                grid-template-columns: repeat(2, minmax(320px, 1fr));
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            
+            .kanban-columns {
+                grid-template-columns: 1fr;
+            }
+            
+            .kanban-column {
+                min-height: auto;
+            }
+        }
+        
+        /* Scroll animations */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(24px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .kanban-column {
+            animation: fadeUp 0.6s ease-out;
+        }
+        
+        .kanban-column:nth-child(1) { animation-delay: 0ms; }
+        .kanban-column:nth-child(2) { animation-delay: 100ms; }
+        .kanban-column:nth-child(3) { animation-delay: 200ms; }
+        .kanban-column:nth-child(4) { animation-delay: 300ms; }
+        .kanban-column:nth-child(5) { animation-delay: 400ms; }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px;
+        }
+        
+        .modal-content {
+            background: var(--color-card);
+            border: 1px solid var(--color-border);
+            border-radius: var(--radius-xl);
+            max-width: 900px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: var(--shadow-lg);
+            animation: slideUp 0.3s ease;
+        }
+        
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 24px 32px;
+            border-bottom: 1px solid var(--color-border);
+            position: sticky;
+            top: 0;
+            background: var(--color-card);
+            z-index: 10;
+        }
+        
+        .modal-header h2 {
+            font-size: 1.75rem;
+            color: var(--color-text);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .modal-close {
+            background: var(--color-bg-subtle);
+            border: 1px solid var(--color-border);
+            color: var(--color-text);
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius-md);
+            cursor: pointer;
+            font-size: 1.5rem;
+            display: grid;
+            place-items: center;
+            transition: all 0.2s;
+        }
+        
+        .modal-close:hover {
+            background: var(--color-accent);
+            color: white;
+            transform: rotate(90deg);
+        }
+        
+        .modal-body {
+            padding: 32px;
+            max-height: 70vh;
+            overflow-y: auto;
+            line-height: 1.8;
+        }
+        
+        .modal-body h2 {
+            font-size: 1.5rem;
+            margin-top: 32px;
+            margin-bottom: 16px;
+            color: var(--color-accent);
+        }
+        
+        .modal-body h2:first-child {
+            margin-top: 0;
+        }
+        
+        .modal-body h3 {
+            font-size: 1.25rem;
+            margin-top: 24px;
+            margin-bottom: 12px;
+            color: var(--color-text);
+        }
+        
+        .modal-body p, .modal-body li {
+            margin-bottom: 12px;
+            color: var(--color-text-muted);
+        }
+        
+        .modal-body ul, .modal-body ol {
+            margin-left: 24px;
+            margin-bottom: 16px;
+        }
+        
+        .modal-body strong {
+            color: var(--color-text);
+            font-weight: 600;
+        }
+        
+        .modal-body code, .modal-body pre {
+            background: var(--color-bg-subtle);
+            padding: 2px 6px;
+            border-radius: var(--radius-sm);
+            font-family: 'Space Mono', monospace;
+            font-size: 0.875rem;
+        }
+        
+        .modal-body pre {
+            padding: 16px;
+            overflow-x: auto;
+            margin: 16px 0;
+        }
+        
+        .modal-body table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 16px 0;
+        }
+        
+        .modal-body th, .modal-body td {
+            padding: 12px;
+            border: 1px solid var(--color-border);
+            text-align: left;
+        }
+        
+        .modal-body th {
+            background: var(--color-bg-subtle);
+            font-weight: 600;
+            color: var(--color-text);
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .modal-content {
+                max-height: 95vh;
+            }
+            
+            .modal-header {
+                padding: 20px;
+            }
+            
+            .modal-body {
+                padding: 20px;
+                max-height: 60vh;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <nav>
+        <div class="container">
+            <div class="nav-content">
+                <div class="logo">
+                    <span>📚</span>
+                    <span>Kanban Resumos</span>
+                </div>
+                <div class="nav-actions">
+                    <button class="theme-toggle" onclick="toggleTheme()">
+                        <span id="themeIcon">🌙</span>
+                        <span id="themeText">Dark</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="hero">
+        <div class="container">
+            <h1>Resumos UNIP - Aula 1</h1>
+            <p>Organize seus estudos com este quadro Kanban. Todos os resumos das disciplinas em um só lugar.</p>
+        </div>
+    </section>
+
+    <!-- Kanban Board -->
+    <section class="kanban-board">
+        <div class="container">
+            <div class="kanban-columns">
+                <!-- Estatística -->
+                <div class="kanban-column">
+                    <div class="column-header">
+                        <div class="column-icon estatistica">📊</div>
+                        <h2 class="column-title">Estatística</h2>
+                        <span class="column-count">6</span>
+                    </div>
+                    
+                    <div class="card" onclick="openModal('estatistica', '📊 Estatística')">
+                        <span class="card-badge">Conceito</span>
+                        <h3>Áreas da Estatística</h3>
+                        <p>Descritiva, Probabilidade e Inferencial. Cada uma com sua aplicação específica.</p>
+                        <div class="card-tags">
+                            <span class="tag">Descritiva</span>
+                            <span class="tag">Inferencial</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card" onclick="openModal('estatistica', '📊 Estatística')">
+                        <span class="card-badge">Fundamentos</span>
+                        <h3>População e Amostra</h3>
+                        <p>Boa amostra ≠ amostra grande. O importante é representar todas as características.</p>
+                        <div class="card-tags">
+                            <span class="tag">População</span>
+                            <span class="tag">Amostra</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card" onclick="openModal('estatistica', '📊 Estatística')">
+                        <span class="card-badge">Tipos</span>
+                        <h3>Variáveis</h3>
+                        <p>Quantitativas (discretas/contínuas) e Qualitativas (nominais/ordinais).</p>
+                        <div class="card-tags">
+                            <span class="tag">Discretas</span>
+                            <span class="tag">Contínuas</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card" onclick="openModal('estatistica', '📊 Estatística')">
+                        <span class="card-badge">Distribuição</span>
+                        <h3>Frequências</h3>
+                        <p>Simples absoluta, relativa e acumulada. Σfᵢ sempre = N.</p>
+                        <div class="card-tags">
+                            <span class="tag">Absoluta</span>
+                            <span class="tag">Relativa</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card" onclick="openModal('estatistica', '📊 Estatística')">
+                        <span class="card-badge">Fórmulas</span>
+                        <h3>Cálculos Importantes</h3>
+                        <p>fᵣᵢ = fᵢ / N | fᵣᵢ% = (fᵢ / N) × 100 | Fᵢ = Fᵢ₋₁ + fᵢ</p>
+                        <div class="card-tags">
+                            <span class="tag">Matemática</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card" onclick="openModal('estatistica', '📊 Estatística')">
+                        <span class="card-badge">Visualização</span>
+                        <h3>Gráficos</h3>
+                        <p>Histograma para variáveis contínuas. Polígono de frequências.</p>
+                        <div class="card-tags">
+                            <span class="tag">Histograma</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Python -->
+                <div class="kanban-column">
+                    <div class="column-header">
+                        <div class="column-icon python">🐍</div>
+                        <h2 class="column-title">Python</h2>
+                        <span class="column-count">6</span>
+                    </div>
+                    
+                    <div class="card" onclick="openModal('python', '🐍 Python')">
+                        <span class="card-badge">Conceito</span>
+                        <h3>Algoritmo vs Programa</h3>
+                        <p>Algoritmo: sequência de passos. Programa: algoritmo em código executável.</p>
+                        <div class="card-tags">
+                            <span class="tag">Lógica</span>
+                            <span class="tag">Fundamentos</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card" onclick="openModal('python', '🐍 Python')">
+                        <span class="card-badge">Linguagem</span>
+                        <h3>Python Interpretado</h3>
+                        <p>Linguagem de alto nível. Interpretador executa linha por linha.</p>
+                        <div class="card-tags">
+                            <span class="tag">Interpretador</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card" onclick="openModal('python', '🐍 Python')">
+                        <span class="card-badge">Operadores</span>
+                        <h3>Aritméticos e Relacionais</h3>
+                        <p>+, -, *, /, //, %, ** | <, >, ==, !=, <=, >=</p>
+                        <div class="card-tags">
+                            <span class="tag">Matemática</span>
+                            <span class="tag">Comparação</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card" onclick="openModal('python', '🐍 Python')">
+                        <span class="card-badge">Tipos</span>
+                        <h3>Dados Básicos</h3>
+                        <p>int, float, str, bool. Python é dinamicamente tipado.</p>
+                        <div class="card-tags">
+                            <span class="tag">int</span>
+                            <span class="tag">float</span>
+                            <span class="tag">str</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card" onclick="openModal('python', '🐍 Python')">
+                        <span class="card-badge">I/O</span>
+                        <h3>Input e Print</h3>
+                        <p>input() sempre retorna string. print() exibe na tela. Use f-strings!</p>
+                        <div class="card-tags">
+                            <span class="tag">Entrada</span>
+                            <span class="tag">Saída</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card" onclick="openModal('python', '🐍 Python')">
+                        <span class="card-badge">Conversão</span>
+                        <h3>Type Casting</h3>
+                        <p>int(), float(), str() para converter tipos de dados.</p>
+                        <div class="card-tags">
+                            <span class="tag">Conversão</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sistema Operacional -->
+                <div class="kanban-column">
+                    <div class="column-header">
+                        <div class="column-icon so">⚙️</div>
+                        <h2 class="column-title">Sist. Operacional</h2>
+                        <span class="column-count">6</span>
+                    </div>
+                    
+                    <div class="card" onclick="openModal('sistema-operacional', '⚙️ Sistema Operacional')">
+                        <span class="card-badge">Conceito</span>
+                        <h3>Funções do SO</h3>
+                        <p>Fornecer abstrações e gerenciar hardware (CPU, memória, disco, E/S).</p>
+                        <div class="card-tags">
+                            <span class="tag">Abstração</span>
+                            <span class="tag">Hardware</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card" onclick="openModal('sistema-operacional', '⚙️ Sistema Operacional')">
+                        <span class="card-badge">História</span>
+                        <h3>5 Gerações</h3>
+                        <p>Válvulas → Transistores → CIs → PCs → Móveis</p>
+                        <div class="card-tags">
+                            <span class="tag">1945-2025</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card" onclick="openModal('sistema-operacional', '⚙️ Sistema Operacional')">
+                        <span class="card-badge">3ª Geração</span>
+                        <h3>Multiprogramação</h3>
+                        <p>Memória dividida em partições. CPU alterna entre tarefas. ~100% uso!</p>
+                        <div class="card-tags">
+                            <span class="tag">IBM 360</span>
+                            <span class="tag">UNIX</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card" onclick="openModal('sistema-operacional', '⚙️ Sistema Operacional')">
+                        <span class="card-badge">Tipos</span>
+                        <h3>Monoprogramáveis</h3>
+                        <p>Um programa por vez. Recursos exclusivos, baixo aproveitamento.</p>
+                        <div class="card-tags">
+                            <span class="tag">Monotarefa</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card" onclick="openModal('sistema-operacional', '⚙️ Sistema Operacional')">
+                        <span class="card-badge">Tipos</span>
+                        <h3>Multiprogramáveis</h3>
+                        <p>Batch, Time-Sharing, Tempo Real. Alto aproveitamento da CPU.</p>
+                        <div class="card-tags">
+                            <span class="tag">Batch</span>
+                            <span class="tag">Real-Time</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card" onclick="openModal('sistema-operacional', '⚙️ Sistema Operacional')">
+                        <span class="card-badge">Processadores</span>
+                        <h3>Múltiplos Processadores</h3>
+                        <p>Fortemente acoplados (memória compartilhada) vs Fracamente acoplados (rede).</p>
+                        <div class="card-tags">
+                            <span class="tag">Paralelo</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ética -->
+                <div class="kanban-column">
+                    <div class="column-header">
+                        <div class="column-icon etica">🌱</div>
+                        <h2 class="column-title">Ética</h2>
+                        <span class="column-count">6</span>
+                    </div>
+                    
+                    <div class="card" onclick="openModal('etica', '🌱 Ética')">
+                        <span class="card-badge">Pilares</span>
+                        <h3>Três Fundamentos</h3>
+                        <p>Ética, Cidadania e Sustentabilidade. Tríade: Sociedade-Governo-Empresas.</p>
+                        <div class="card-tags">
+                            <span class="tag">Ética</span>
+                            <span class="tag">Cidadania</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card" onclick="openModal('etica', '🌱 Ética')">
+                        <span class="card-badge">História</span>
+                        <h3>Evolução da Ética</h3>
+                        <p>Antiguidade (Sócrates) → Cristã (Agostinho) → Moderna (Kant, Weber).</p>
+                        <div class="card-tags">
+                            <span class="tag">Filosofia</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card" onclick="openModal('etica', '🌱 Ética')">
+                        <span class="card-badge">Profissional</span>
+                        <h3>Ética Empresarial</h3>
+                        <p>Deontologia, Código de Ética, Governança Corporativa, Compliance.</p>
+                        <div class="card-tags">
+                            <span class="tag">Governança</span>
+                            <span class="tag">Compliance</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card" onclick="openModal('etica', '🌱 Ética')">
+                        <span class="card-badge">Cidadania</span>
+                        <h3>Constituição Federal</h3>
+                        <p>Direitos e deveres. Cidadania ativa vs passiva. Empresa cidadã.</p>
+                        <div class="card-tags">
+                            <span class="tag">CF 1988</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card" onclick="openModal('etica', '🌱 Ética')">
+                        <span class="card-badge">Sustentabilidade</span>
+                        <h3>Três Pilares</h3>
+                        <p>Social, Econômico, Ambiental. ISO 14001, ISO 26000, LEED.</p>
+                        <div class="card-tags">
+                            <span class="tag">ESG</span>
+                            <span class="tag">ISO</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card" onclick="openModal('etica', '🌱 Ética')">
+                        <span class="card-badge">ONU</span>
+                        <h3>Agenda 2030</h3>
+                        <p>17 Objetivos de Desenvolvimento Sustentável (ODS) para 2030.</p>
+                        <div class="card-tags">
+                            <span class="tag">ODS</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sistema de Informação -->
+                <div class="kanban-column">
+                    <div class="column-header">
+                        <div class="column-icon info">💻</div>
+                        <h2 class="column-title">Sist. Informação</h2>
+                        <span class="column-count">1</span>
+                    </div>
+                    
+                    <div class="card">
+                        <span class="card-badge">Em breve</span>
+                        <h3>Resumo em desenvolvimento</h3>
+                        <p>O resumo desta disciplina será adicionado em breve. Aguarde!</p>
+                        <div class="card-tags">
+                            <span class="tag">Próximo</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>&copy; 2025 Estudos UNIP - Kanban de Resumos</p>
+        </div>
+    </footer>
+
+    <!-- Modal -->
+    <div class="modal" id="resumoModal" onclick="closeModal(event)">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h2 id="modalTitle"></h2>
+                <button class="modal-close" onclick="closeModal()">×</button>
+            </div>
+            <div class="modal-body" id="modalBody"></div>
+        </div>
+    </div>
+
+    <script>
+        // Theme Toggle
+        function toggleTheme() {
+            const html = document.documentElement;
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            
+            updateThemeButton(newTheme);
+        }
+        
+        function updateThemeButton(theme) {
+            const icon = document.getElementById('themeIcon');
+            const text = document.getElementById('themeText');
+            
+            if (theme === 'light') {
+                icon.textContent = '☀️';
+                text.textContent = 'Light';
+            } else {
+                icon.textContent = '🌙';
+                text.textContent = 'Dark';
+            }
+        }
+        
+        // Load saved theme
+        window.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('theme') || 'dark';
+            document.documentElement.setAttribute('data-theme', savedTheme);
+            updateThemeButton(savedTheme);
+        });
+        
+        // Modal Functions
+        const resumeContent = {
+            'estatistica': `
+                <h2>Conceito Principal</h2>
+                <p>Estatística é a ciência que coleta, organiza, analisa e interpreta dados para auxiliar na tomada de decisões.</p>
+                
+                <h2>Áreas da Estatística</h2>
+                <ul>
+                    <li><strong>Descritiva</strong>: Organiza e sintetiza dados já ocorridos (sem incerteza)</li>
+                    <li><strong>Probabilidade</strong>: Lida com eventos aleatórios e incerteza</li>
+                    <li><strong>Indutiva (Inferencial)</strong>: Usa amostras para estimar características da população (com margem de erro)</li>
+                </ul>
+                
+                <h2>Conceitos Fundamentais</h2>
+                <h3>População e Amostra</h3>
+                <ul>
+                    <li><strong>População</strong>: Coleção completa de todos os elementos de interesse</li>
+                    <li><strong>Amostra</strong>: Subconjunto da população (mais rápido, barato e eficiente)</li>
+                    <li>Boa amostra = representa todas as características da população na proporção correta</li>
+                </ul>
+                
+                <h3>Dados Brutos e Rol</h3>
+                <ul>
+                    <li><strong>Dados Brutos</strong>: Valores não organizados</li>
+                    <li><strong>Rol</strong>: Dados organizados (crescente/decrescente)</li>
+                </ul>
+                
+                <h3>Tipos de Variáveis</h3>
+                <p><strong>Quantitativas</strong> (mensuráveis):</p>
+                <ul>
+                    <li><strong>Discretas</strong>: Valores contáveis/inteiros (ex: nº de filhos, nº de alunos)</li>
+                    <li><strong>Contínuas</strong>: Valores fracionários possíveis (ex: altura, peso, temperatura)</li>
+                </ul>
+                <p><strong>Qualitativas</strong> (categóricas):</p>
+                <ul>
+                    <li><strong>Nominais</strong>: Sem hierarquia (ex: sexo, cor dos olhos, nacionalidade)</li>
+                    <li><strong>Ordinais</strong>: Com hierarquia (ex: escolaridade, faixa etária, classe social)</li>
+                </ul>
+                
+                <h2>Distribuição de Frequências</h2>
+                <h3>Tipos de Frequência</h3>
+                <ul>
+                    <li><strong>Simples Absoluta (fᵢ)</strong>: Contagem de ocorrências</li>
+                    <li><strong>Simples Relativa (fᵣᵢ)</strong>: fᵢ / N (unitária ou percentual)</li>
+                    <li><strong>Acumulada Absoluta (Fᵢ)</strong>: Soma acumulada das frequências</li>
+                </ul>
+                
+                <h2>Fórmulas Importantes</h2>
+                <ul>
+                    <li>N = Σfᵢ (total de elementos)</li>
+                    <li>fᵣᵢ = fᵢ / N (frequência relativa)</li>
+                    <li>fᵣᵢ% = (fᵢ / N) × 100</li>
+                    <li>Fᵢ = Fᵢ₋₁ + fᵢ (frequência acumulada)</li>
+                </ul>
+                
+                <h2>Pontos-Chave para Lembrar</h2>
+                <ul>
+                    <li>✓ <strong>Boa amostra ≠ amostra grande</strong> — O importante é representar todas as características da população</li>
+                    <li>✓ <strong>Rol mantém o mesmo número de elementos</strong> — Apenas organiza, não reduz dados</li>
+                    <li>✓ <strong>Variáveis discretas = contáveis</strong> (inteiros) | <strong>Contínuas = mensuráveis</strong> (fracionários)</li>
+                    <li>✓ <strong>Σfᵢ sempre = N</strong> — A soma de todas as frequências absolutas é o total de elementos</li>
+                    <li>✓ <strong>Estatística Descritiva ≠ Inferencial</strong> — Descritiva descreve o passado (sem incerteza), Inferencial estima o futuro (com margem de erro)</li>
+                </ul>
+            `,
+            'python': `
+                <h2>Lógica de Programação</h2>
+                <h3>Algoritmo vs Programa</h3>
+                <ul>
+                    <li><strong>Algoritmo</strong>: Sequência de instruções para realizar uma tarefa (pode ser executado por humanos)</li>
+                    <li><strong>Programa</strong>: Algoritmo implementado em linguagem de programação (executado por computadores)</li>
+                </ul>
+                
+                <h2>Python - Características</h2>
+                <ul>
+                    <li>Linguagem de <strong>alto nível</strong> (próxima à linguagem humana)</li>
+                    <li>Criada por Guido van Rossum (1991)</li>
+                    <li>Versão atual: 3.14 (2025)</li>
+                    <li>Usa <strong>interpretador</strong> (converte e executa linha por linha)</li>
+                </ul>
+                
+                <h3>Compilador vs Interpretador</h3>
+                <ul>
+                    <li><strong>Compilador</strong>: Converte todo código de uma vez, gera executável</li>
+                    <li><strong>Interpretador</strong>: Converte e executa uma instrução por vez (Python usa este)</li>
+                </ul>
+                
+                <h2>Operadores</h2>
+                <h3>Aritméticos</h3>
+                <ul>
+                    <li><code>+</code> Adição | <code>-</code> Subtração | <code>*</code> Multiplicação</li>
+                    <li><code>/</code> Divisão | <code>//</code> Divisão inteira | <code>%</code> Resto</li>
+                    <li><code>**</code> Potenciação</li>
+                </ul>
+                <p><strong>Precedência</strong>: <code>()</code> → <code>**</code> → <code>* / // %</code> → <code>+ -</code></p>
+                
+                <h3>Relacionais (retornam True/False)</h3>
+                <ul>
+                    <li><code>&lt;</code> Menor que | <code>&gt;</code> Maior que</li>
+                    <li><code>&lt;=</code> Menor ou igual | <code>&gt;=</code> Maior ou igual</li>
+                    <li><code>==</code> Igual a | <code>!=</code> Diferente de</li>
+                </ul>
+                
+                <h2>Tipos de Dados Básicos</h2>
+                <ul>
+                    <li><strong>int</strong>: Número inteiro (ex: <code>2</code>, <code>-5</code>, <code>100</code>)</li>
+                    <li><strong>float</strong>: Número real (ex: <code>3.14</code>, <code>34.56</code>)</li>
+                    <li><strong>str</strong>: String/texto (ex: <code>'Maria'</code>, <code>"Olá"</code>)</li>
+                    <li><strong>bool</strong>: Booleano (ex: <code>True</code>, <code>False</code>)</li>
+                </ul>
+                
+                <h2>Funções Essenciais</h2>
+                <h3>Entrada e Saída</h3>
+                <ul>
+                    <li><code>input()</code>: Coleta texto do teclado (retorna sempre <code>str</code>)</li>
+                    <li><code>print()</code>: Exibe mensagem na tela</li>
+                </ul>
+                
+                <h3>Conversão de Tipos</h3>
+                <ul>
+                    <li><code>int()</code>: Converte para inteiro</li>
+                    <li><code>float()</code>: Converte para real</li>
+                    <li><code>str()</code>: Converte para string</li>
+                </ul>
+                
+                <h2>Exemplo Completo</h2>
+                <pre><code># Programa que calcula o dobro de um número
+num = int(input("Digite um nº inteiro: "))
+print(f"Dobro de {num} é {num * 2}")</code></pre>
+                
+                <h2>Conceitos-Chave</h2>
+                <ul>
+                    <li>✓ Python é interpretado (não compilado)</li>
+                    <li>✓ <code>input()</code> sempre retorna string (converter com <code>int()</code> ou <code>float()</code> se necessário)</li>
+                    <li>✓ F-strings (<code>f"..."</code>) facilitam interpolação de variáveis</li>
+                    <li>✓ Variáveis podem mudar de tipo durante execução</li>
+                </ul>
+            `,
+            'sistema-operacional': `
+                <h2>O que é um Sistema Operacional?</h2>
+                <p>Um SO realiza duas funções essenciais:</p>
+                <ol>
+                    <li><strong>Fornecer abstrações</strong>: Interface limpa entre programas e hardware</li>
+                    <li><strong>Gerenciar hardware</strong>: Controlar recursos (CPU, memória, disco, E/S)</li>
+                </ol>
+                
+                <h2>História dos Sistemas Operacionais</h2>
+                <h3>1ª Geração (1945-1955): Válvulas</h3>
+                <ul>
+                    <li>~20.000 válvulas</li>
+                    <li>Programador operava diretamente a máquina</li>
+                    <li>Sem sistema operacional</li>
+                </ul>
+                
+                <h3>2ª Geração (1955-1965): Transistores e Batch</h3>
+                <ul>
+                    <li><strong>Mainframes</strong></li>
+                    <li>Programação em cartões perfurados</li>
+                    <li><strong>Sistemas Batch</strong>: Processamento em lote (sem interação)</li>
+                </ul>
+                
+                <h3>3ª Geração (1965-1980): Circuitos Integrados</h3>
+                <ul>
+                    <li><strong>IBM 360</strong> e OS/360</li>
+                    <li><strong>Multiprogramação</strong>: Várias tarefas na memória, CPU alterna entre elas</li>
+                    <li><strong>Spooling</strong>: Transferência de tarefas para disco</li>
+                    <li><strong>Timesharing</strong>: Cada usuário tem terminal on-line</li>
+                    <li><strong>MULTICS</strong> → <strong>UNIX</strong> → Linux, BSD, macOS</li>
+                </ul>
+                
+                <h3>4ª Geração (1980-presente): Computadores Pessoais</h3>
+                <ul>
+                    <li><strong>LSI</strong> (Large Scale Integration)</li>
+                    <li>Intel 8080 (primeira CPU de 8 bits)</li>
+                    <li>MS-DOS, Windows, Linux para PCs</li>
+                </ul>
+                
+                <h3>5ª Geração (1990-presente): Computadores Móveis</h3>
+                <ul>
+                    <li>Smartphones e tablets</li>
+                    <li>Android, iOS</li>
+                </ul>
+                
+                <h2>Tipos de Sistemas Operacionais</h2>
+                <h3>Por Programação</h3>
+                <ul>
+                    <li><strong>Monoprogramáveis</strong>: Um programa por vez (recursos exclusivos, baixo aproveitamento)</li>
+                    <li><strong>Multiprogramáveis</strong>: Vários programas compartilham recursos (alto aproveitamento)</li>
+                </ul>
+                
+                <h3>Por Aplicação</h3>
+                <ul>
+                    <li><strong>Batch</strong>: Sem interação do usuário (cálculos, compilações, backups)</li>
+                    <li><strong>Time-Sharing</strong>: Fatias de tempo divididas entre processos</li>
+                    <li><strong>Tempo Real</strong>: Prazos rígidos (deadlines) - controle de voo, UTI, freios ABS</li>
+                </ul>
+                
+                <h2>Multiprogramação</h2>
+                <p>Memória dividida em partições, cada uma com uma tarefa. Enquanto uma aguarda E/S, outra usa a CPU.</p>
+                <p><strong>Vantagens:</strong></p>
+                <ul>
+                    <li>CPU ocupa quase 100% do tempo</li>
+                    <li>Melhor aproveitamento de recursos</li>
+                    <li>Menor tempo total de execução</li>
+                </ul>
+                
+                <h2>Sistemas com Múltiplos Processadores</h2>
+                <h3>Fortemente Acoplados</h3>
+                <ul>
+                    <li>Vários processadores compartilham <strong>uma única memória</strong></li>
+                    <li><strong>Um único SO</strong> gerencia tudo</li>
+                    <li>Exemplos: Unix, Windows</li>
+                </ul>
+                
+                <h3>Fracamente Acoplados</h3>
+                <ul>
+                    <li>Sistemas <strong>independentes</strong> conectados por rede</li>
+                    <li>Cada sistema tem <strong>seu próprio SO</strong></li>
+                    <li>SO de Rede ou Sistemas Distribuídos</li>
+                </ul>
+            `,
+            'etica': `
+                <h2>Visão Geral da Disciplina</h2>
+                <p>A disciplina aborda três pilares fundamentais:</p>
+                <ol>
+                    <li><strong>Ética</strong>: Conceitos, história e aplicação profissional/empresarial</li>
+                    <li><strong>Cidadania</strong>: Direitos, deveres e Constituição Brasileira</li>
+                    <li><strong>Sustentabilidade</strong>: Desenvolvimento sustentável, indicadores e Agenda 2030</li>
+                </ol>
+                <p><strong>Tríade central</strong>: Sociedade – Governo – Empresas</p>
+                
+                <h2>Bloco 1: Ética</h2>
+                <h3>Conceitos Fundamentais</h3>
+                <ul>
+                    <li><strong>Ética</strong>: Princípios que orientam o comportamento humano</li>
+                    <li><strong>Moral</strong>: Conjunto de valores e costumes de uma sociedade</li>
+                </ul>
+                
+                <h3>História da Ética</h3>
+                <ul>
+                    <li><strong>Antiguidade</strong>: Sócrates, Platão, Aristóteles (virtude e felicidade)</li>
+                    <li><strong>Ética Cristã</strong>: Agostinho e Tomás de Aquino</li>
+                    <li><strong>Modernidade</strong>: Kant (imperativo categórico), Weber (espírito do capitalismo)</li>
+                </ul>
+                
+                <h3>Ética Profissional e Empresarial</h3>
+                <ul>
+                    <li><strong>Deontologia</strong>: Deveres profissionais</li>
+                    <li><strong>Código de Ética</strong>: Normas de conduta organizacional</li>
+                    <li><strong>Governança Corporativa</strong>: Sistema de gestão e controle</li>
+                    <li><strong>Compliance</strong>: Conformidade com leis e regulamentos</li>
+                </ul>
+                
+                <h2>Bloco 2: Cidadania</h2>
+                <h3>Conceito de Cidadania</h3>
+                <ul>
+                    <li>Conjunto de direitos e deveres do cidadão</li>
+                    <li><strong>Cidadania ativa</strong>: Participação consciente</li>
+                    <li><strong>Cidadania passiva</strong>: Apenas usufrui direitos</li>
+                </ul>
+                
+                <h3>Constituição Federal de 1988</h3>
+                <ul>
+                    <li>Princípios fundamentais</li>
+                    <li>Direitos humanos e fundamentais</li>
+                    <li>Responsabilidade social</li>
+                </ul>
+                
+                <h3>Empresa Cidadã</h3>
+                <ul>
+                    <li>Responsabilidade social corporativa</li>
+                    <li>Direitos e deveres nas relações de trabalho</li>
+                    <li>Ação cidadã no ambiente organizacional</li>
+                </ul>
+                
+                <h2>Bloco 3: Sustentabilidade</h2>
+                <h3>Fundamentos</h3>
+                <ul>
+                    <li><strong>Desenvolvimento Sustentável</strong>: Atender necessidades presentes sem comprometer gerações futuras</li>
+                    <li><strong>Três Pilares</strong>: Social, Econômico, Ambiental</li>
+                    <li><strong>Marcos históricos</strong>: Relatório Brundtland (1987), Rio-92, Rio+20</li>
+                </ul>
+                
+                <h3>Indicadores</h3>
+                <ul>
+                    <li><strong>Pegada Ecológica</strong>: Impacto ambiental total</li>
+                    <li><strong>Pegada de Carbono</strong>: Emissões de gases de efeito estufa</li>
+                    <li><strong>Pegada Hídrica</strong>: Consumo de água</li>
+                    <li><strong>FIB</strong> (Felicidade Interna Bruta): Indicador de bem-estar</li>
+                </ul>
+                
+                <h3>Certificações</h3>
+                <ul>
+                    <li><strong>ISO 14001</strong>: Gestão ambiental</li>
+                    <li><strong>ISO 26000</strong>: Responsabilidade social</li>
+                    <li><strong>LEED</strong>: Construções sustentáveis</li>
+                </ul>
+                
+                <h2>Bloco 4: Agenda 2030</h2>
+                <h3>17 Objetivos de Desenvolvimento Sustentável (ODS)</h3>
+                <p>Metas globais para 2030:</p>
+                <ul>
+                    <li>Erradicação da pobreza | Fome zero | Saúde e bem-estar</li>
+                    <li>Educação de qualidade | Igualdade de gênero</li>
+                    <li>Água potável e saneamento | Energia limpa e acessível</li>
+                    <li>Trabalho decente | Indústria, inovação e infraestrutura</li>
+                    <li>Redução das desigualdades | Cidades sustentáveis</li>
+                    <li>Consumo responsável | Ação climática</li>
+                    <li>Vida na água | Vida terrestre</li>
+                    <li>Paz e justiça | Parcerias pelas metas</li>
+                </ul>
+                
+                <h3>Gestão Sustentável</h3>
+                <ul>
+                    <li><strong>ESG</strong>: Environmental, Social and Governance</li>
+                    <li>Compliance e ética nos negócios</li>
+                    <li>Integridade corporativa</li>
+                </ul>
+                
+                <h2>Aplicação em TI</h2>
+                <h3>Ética em TI</h3>
+                <ul>
+                    <li>Proteção de dados (LGPD)</li>
+                    <li>Privacidade e segurança</li>
+                    <li>Uso ético de IA</li>
+                </ul>
+                
+                <h3>Sustentabilidade em TI</h3>
+                <ul>
+                    <li>Green IT (TI Verde)</li>
+                    <li>Eficiência energética de data centers</li>
+                    <li>Descarte correto de equipamentos (e-waste)</li>
+                </ul>
+                
+                <h2>Conceitos-Chave</h2>
+                <ul>
+                    <li><strong>Ética</strong>: Princípios de conduta</li>
+                    <li><strong>Cidadania</strong>: Direitos + deveres + participação ativa</li>
+                    <li><strong>Sustentabilidade</strong>: Equilíbrio entre sociedade, economia e meio ambiente</li>
+                    <li><strong>Governança</strong>: Sistema de gestão transparente e responsável</li>
+                    <li><strong>ESG</strong>: Critérios ambientais, sociais e de governança</li>
+                </ul>
+            `
+        };
+        
+        function openModal(subject, title) {
+            const modal = document.getElementById('resumoModal');
+            const modalTitle = document.getElementById('modalTitle');
+            const modalBody = document.getElementById('modalBody');
+            
+            modalTitle.textContent = title;
+            modalBody.innerHTML = resumeContent[subject] || '<p>Conteúdo não disponível.</p>';
+            modal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeModal(event) {
+            if (event && event.target !== event.currentTarget) return;
+            
+            const modal = document.getElementById('resumoModal');
+            const modalBody = document.getElementById('modalBody');
+            
+            modal.classList.remove('active');
+            modalBody.innerHTML = '';
+            document.body.style.overflow = '';
+        }
+        
+        // Close modal with ESC key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                closeModal();
+            }
+        });
+    </script>
+</body>
+</html>
