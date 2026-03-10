@@ -1,4 +1,24 @@
-# Resumo - Python Aula 1
+# Resumo - Python Lab 01: Flowgorithm, IDLE, Operadores e Decisão
+
+## Ferramentas de Desenvolvimento
+
+### Flowgorithm
+- Software para criar **fluxogramas executáveis**
+- Permite testar lógica antes de programar
+- Gera código em várias linguagens (Python, C++, Java, etc.)
+- Download: http://www.flowgorithm.org
+
+### IDLE (Python)
+- **IDE oficial do Python** (Integrated Development Environment)
+- Vem instalado com Python
+- Dois modos:
+  - **Shell**: Modo interativo (testa comandos linha a linha)
+  - **Editor**: Modo script (escreve programas completos em .py)
+
+### Alternativas Online
+- **Online Python**: https://www.online-python.com/
+- **Replit**: https://replit.com/
+- Úteis para testar código sem instalar Python
 
 ## Lógica de Programação
 
@@ -95,8 +115,145 @@ num = int(input("Digite um nº inteiro: "))
 print(f"Dobro de {num} é {num * 2}")
 ```
 
+## Estruturas de Decisão
+
+### if (Se)
+Executa bloco de código se condição for verdadeira
+```python
+idade = int(input("Digite sua idade: "))
+if idade >= 18:
+    print("Você é maior de idade")
+```
+
+### if-else (Se-Senão)
+Executa um bloco se verdadeiro, outro se falso
+```python
+idade = int(input("Digite sua idade: "))
+if idade >= 18:
+    print("Você é maior de idade")
+else:
+    print("Você é menor de idade")
+```
+
+### if-elif-else (Se-Senão Se-Senão)
+Testa múltiplas condições em sequência
+```python
+nota = float(input("Digite a nota: "))
+if nota >= 7:
+    print("Aprovado")
+elif nota >= 5:
+    print("Recuperação")
+else:
+    print("Reprovado")
+```
+
+### Operadores Lógicos
+- **`and`**: Retorna True se ambas condições forem verdadeiras
+  ```python
+  if idade >= 18 and idade <= 65:
+      print("Adulto em idade ativa")
+  ```
+
+- **`or`**: Retorna True se pelo menos uma condição for verdadeira
+  ```python
+  if dia == "sábado" or dia == "domingo":
+      print("Final de semana")
+  ```
+
+- **`not`**: Inverte o valor booleano
+  ```python
+  if not chovendo:
+      print("Pode sair sem guarda-chuva")
+  ```
+
+### Tabela Verdade
+
+| A | B | A and B | A or B | not A |
+|---|---|---------|--------|-------|
+| T | T | T | T | F |
+| T | F | F | T | F |
+| F | T | F | T | T |
+| F | F | F | F | T |
+
+## Indentação em Python
+
+**IMPORTANTE**: Python usa indentação (espaços/tabs) para definir blocos de código
+
+```python
+# CORRETO
+if x > 0:
+    print("Positivo")  # 4 espaços de indentação
+    print("Maior que zero")
+
+# ERRADO - IndentationError
+if x > 0:
+print("Positivo")  # Sem indentação
+```
+
+**Padrão**: 4 espaços por nível de indentação
+
+## Exemplos Práticos
+
+### Exemplo 1: Par ou Ímpar
+```python
+num = int(input("Digite um número: "))
+if num % 2 == 0:
+    print(f"{num} é par")
+else:
+    print(f"{num} é ímpar")
+```
+
+### Exemplo 2: Maior de Três Números
+```python
+a = int(input("Digite o 1º número: "))
+b = int(input("Digite o 2º número: "))
+c = int(input("Digite o 3º número: "))
+
+if a > b and a > c:
+    print(f"Maior: {a}")
+elif b > c:
+    print(f"Maior: {b}")
+else:
+    print(f"Maior: {c}")
+```
+
+### Exemplo 3: Calculadora Simples
+```python
+num1 = float(input("Digite o 1º número: "))
+num2 = float(input("Digite o 2º número: "))
+op = input("Digite a operação (+, -, *, /): ")
+
+if op == "+":
+    print(f"Resultado: {num1 + num2}")
+elif op == "-":
+    print(f"Resultado: {num1 - num2}")
+elif op == "*":
+    print(f"Resultado: {num1 * num2}")
+elif op == "/":
+    if num2 != 0:
+        print(f"Resultado: {num1 / num2}")
+    else:
+        print("Erro: Divisão por zero")
+else:
+    print("Operação inválida")
+```
+
 ## Conceitos-Chave
-- Python é interpretado (não compilado)
-- `input()` sempre retorna string (converter com `int()` ou `float()` se necessário)
-- F-strings (`f"..."`) facilitam interpolação de variáveis
-- Variáveis podem mudar de tipo durante execução
+
+✓ **Flowgorithm**: Ferramenta visual para criar algoritmos antes de programar
+
+✓ **IDLE**: IDE oficial do Python (Shell + Editor)
+
+✓ **Python é interpretado**: Não compilado, executa linha a linha
+
+✓ **`input()` retorna string**: Sempre converter com `int()` ou `float()` para cálculos
+
+✓ **Indentação obrigatória**: Define blocos de código (padrão: 4 espaços)
+
+✓ **if-elif-else**: Estrutura de decisão múltipla
+
+✓ **Operadores lógicos**: `and`, `or`, `not` para combinar condições
+
+✓ **F-strings**: `f"..."` facilita interpolação de variáveis
+
+✓ **Operador `%`**: Resto da divisão (útil para verificar par/ímpar)
