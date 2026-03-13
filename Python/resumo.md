@@ -257,3 +257,144 @@ else:
 ✓ **F-strings**: `f"..."` facilita interpolação de variáveis
 
 ✓ **Operador `%`**: Resto da divisão (útil para verificar par/ímpar)
+
+---
+
+## Operadores Lógicos (AULA 2)
+
+### O que são?
+Executam operações lógicas entre operandos e retornam `True` ou `False`.
+
+| Operador | Descrição | Precedência |
+|----------|-----------|-------------|
+| `not` | Inverte o valor lógico | 1ª (maior) |
+| `and` | True apenas se **ambos** forem verdadeiros | 2ª |
+| `or` | True se **pelo menos um** for verdadeiro | 3ª (menor) |
+
+> Precedência completa: `()` → `**` → `* / // %` → `+ -` → relacionais → `not` → `and` → `or`
+
+---
+
+### Tabelas Verdade Detalhadas
+
+**AND:**
+```
+A       B       A and B
+True    True    True
+True    False   False
+False   True    False
+False   False   False
+```
+
+**OR:**
+```
+A       B       A or B
+True    True    True
+True    False   True
+False   True    True
+False   False   False
+```
+
+**NOT:**
+```
+A        not A
+True     False
+False    True
+```
+
+---
+
+### Exemplos com Variáveis
+
+```python
+>>> x = 5
+
+# AND
+>>> x == 5 and 2 < 3
+True    # True AND True = True
+>>> x != 5 and 9 > 2
+False   # False AND True = False
+
+# OR
+>>> x != 5 or 9 > 2
+True    # False OR True = True
+>>> 2 > 7 or 4 >= 5
+False   # False OR False = False
+
+# NOT
+>>> not 3 < 7
+False   # NOT True = False
+>>> not (True or True)
+False   # NOT True = False
+```
+
+---
+
+### Precedência na Prática
+
+```python
+>>> not True or True
+True
+# Passo 1: not True → False
+# Passo 2: False or True → True
+
+>>> not (True or True)
+False
+# Passo 1: (True or True) → True
+# Passo 2: not True → False
+```
+
+---
+
+### Exercícios
+
+```python
+a) True and False or True     # → True   (False OR True)
+b) not False and True         # → True   (True AND True)
+c) True or False and False    # → True   (True OR False)
+d) not (True and False)       # → True   (NOT False)
+e) (True or False) and (False or True)  # → True
+```
+
+---
+
+### Casos de Uso Reais
+
+```python
+# Validação de login
+login_valido = (usuario == "admin") and (senha == "1234")
+
+# Verificação de acesso por idade ou VIP
+pode_entrar = (idade >= 18) or eh_vip
+
+# Filtro com múltiplas condições
+mostrar = em_estoque and (preco <= 200 or categoria == "eletrônicos")
+
+# Verificar se pode dirigir
+pode_dirigir = (idade >= 18) and tem_carteira
+
+# Final de semana
+eh_fds = dia == "sábado" or dia == "domingo"
+```
+
+---
+
+### Boas Práticas
+
+```python
+# Use parênteses para clareza
+if (idade >= 18) and (tem_carteira):   # Bom
+if not a and b or c and not d:         # Confuso — use parênteses
+
+# Nomeie booleanos de forma descritiva
+is_valid = True
+has_permission = False
+
+# Evite comparações redundantes
+if is_valid:            # Bom
+if is_valid == True:    # Ruim
+
+# Evite negações duplas
+if is_valid:             # Bom
+if not (not is_valid):   # Ruim
+```
