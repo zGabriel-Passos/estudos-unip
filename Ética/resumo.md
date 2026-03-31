@@ -35,7 +35,7 @@ A disciplina propõe o conhecimento das teorias sobre ética, cidadania e susten
 ```
 ┌─────────────────┬─────────────────┬─────────────────────┬─────────────────┐
 │    BLOCO 1      │    BLOCO 2      │      BLOCO 3        │    BLOCO 4      │
-│     ÉTICA       │   CIDADANIA     │  SUSTENTABILIDADE   │  AGENDA 2030   │
+│     ÉTICA       │   CIDADANIA     │  SUSTENTABILIDADE   │  AGENDA 2030    │
 ├─────────────────┼─────────────────┼─────────────────────┼─────────────────┤
 │ Aulas 1-4       │ Aulas 5-6       │ Aulas 7-8           │ Aulas 9-10      │
 │ • História da   │ • Conceito de   │ • Histórico e       │ • Histórico da  │
