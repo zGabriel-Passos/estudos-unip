@@ -1,0 +1,1541 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Índice Zero — Domine laços e vetores em C</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Source+Sans+3:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --ink: #16233b;
+            --ink-soft: #3c4a63;
+            --paper: #eef1f6;
+            --paper-raised: #ffffff;
+            --grid-line: #d6dde6;
+            --accent: #e0472c;
+            --accent-dark: #b8371f;
+            --accent-soft: rgba(224, 71, 44, 0.10);
+            --ok: #1f7a4d;
+            --ok-soft: rgba(31, 122, 77, 0.12);
+            --border: #cfd7e2;
+            --shadow-sm: 0 1px 2px rgba(22, 35, 59, 0.08);
+            --shadow-md: 0 6px 20px rgba(22, 35, 59, 0.10);
+            --shadow-lg: 0 18px 48px rgba(22, 35, 59, 0.16);
+            --radius-sm: 6px;
+            --radius-md: 10px;
+            --radius-lg: 18px;
+            --font-mono: 'Space Mono', 'Courier New', monospace;
+            --font-body: 'Source Sans 3', -apple-system, sans-serif;
+        }
+
+        :root:not([data-theme="light"]) {
+            @media (prefers-color-scheme: dark) {
+                --ink: #eef1f6;
+                --ink-soft: #aab6c8;
+                --paper: #12192a;
+                --paper-raised: #1a2338;
+                --grid-line: #25314a;
+                --accent: #ff6a49;
+                --accent-dark: #ff8264;
+                --accent-soft: rgba(255, 106, 73, 0.14);
+                --ok: #4ad395;
+                --ok-soft: rgba(74, 211, 149, 0.14);
+                --border: #2c3a56;
+                --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+                --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.35);
+                --shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.5);
+            }
+        }
+
+        :root[data-theme="dark"] {
+            --ink: #eef1f6;
+            --ink-soft: #aab6c8;
+            --paper: #12192a;
+            --paper-raised: #1a2338;
+            --grid-line: #25314a;
+            --accent: #ff6a49;
+            --accent-dark: #ff8264;
+            --accent-soft: rgba(255, 106, 73, 0.14);
+            --ok: #4ad395;
+            --ok-soft: rgba(74, 211, 149, 0.14);
+            --border: #2c3a56;
+            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+            --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.35);
+            --shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.5);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            background: var(--paper);
+            background-image:
+                linear-gradient(var(--grid-line) 1px, transparent 1px),
+                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+            background-size: 32px 32px;
+            color: var(--ink);
+            font-family: var(--font-body);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        .wrap {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        section {
+            padding: 88px 0;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: var(--font-mono);
+            line-height: 1.15;
+            margin: 0;
+            letter-spacing: -0.01em;
+        }
+
+        p {
+            margin: 0;
+        }
+
+        button {
+            font-family: inherit;
+            cursor: pointer;
+        }
+
+        :focus-visible {
+            outline: 2.5px solid var(--accent);
+            outline-offset: 3px;
+            border-radius: 4px;
+        }
+
+        /* ---------- Buttons ---------- */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 13px 26px;
+            border-radius: var(--radius-sm);
+            font-weight: 700;
+            font-size: 0.95rem;
+            font-family: var(--font-body);
+            border: 1.5px solid transparent;
+            min-height: 46px;
+            transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+            text-decoration: none;
+        }
+
+        .btn-primary {
+            background: var(--accent);
+            color: #fff;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 26px rgba(224, 71, 44, 0.35);
+            background: var(--accent-dark);
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--ink);
+            border-color: var(--border);
+        }
+
+        .btn-ghost:hover {
+            border-color: var(--ink);
+            transform: translateY(-2px);
+        }
+
+        .btn-block {
+            width: 100%;
+        }
+
+        /* ---------- Navbar ---------- */
+        header.nav {
+            position: sticky;
+            top: 0;
+            z-index: 50;
+            background: color-mix(in srgb, var(--paper) 88%, transparent);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--grid-line);
+        }
+
+        .nav-inner {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 24px;
+            max-width: 1180px;
+            margin: 0 auto;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-weight: 700;
+            font-size: 1.15rem;
+            text-decoration: none;
+            color: var(--ink);
+        }
+
+        .logo .brackets {
+            color: var(--accent);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 32px;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.94rem;
+            color: var(--ink-soft);
+            transition: color 0.15s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent);
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 18px;
+        }
+
+        .burger {
+            display: none;
+            background: none;
+            border: none;
+            padding: 8px;
+            width: 44px;
+            height: 44px;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .burger span,
+        .burger::before,
+        .burger::after {
+            display: none;
+        }
+
+        .burger-icon {
+            width: 22px;
+            height: 16px;
+            position: relative;
+        }
+
+        .burger-icon span {
+            position: absolute;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--ink);
+            border-radius: 2px;
+            transition: all 0.25s ease;
+        }
+
+        .burger-icon span:nth-child(1) {
+            top: 0;
+        }
+
+        .burger-icon span:nth-child(2) {
+            top: 7px;
+        }
+
+        .burger-icon span:nth-child(3) {
+            top: 14px;
+        }
+
+        .nav.open .burger-icon span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+
+        .nav.open .burger-icon span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .nav.open .burger-icon span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
+        @media (max-width:860px) {
+            .nav-links {
+                position: fixed;
+                top: 65px;
+                left: 0;
+                right: 0;
+                background: var(--paper-raised);
+                flex-direction: column;
+                gap: 0;
+                border-bottom: 1px solid var(--grid-line);
+                max-height: 0;
+                overflow: hidden;
+                transition: max-height 0.3s ease;
+            }
+
+            header.nav.open .nav-links {
+                max-height: 400px;
+            }
+
+            .nav-links a {
+                display: block;
+                padding: 16px 24px;
+                width: 100%;
+                border-top: 1px solid var(--grid-line);
+            }
+
+            .nav-right .btn-ghost {
+                display: none;
+            }
+
+            .burger {
+                display: flex;
+            }
+        }
+
+        /* ---------- Hero ---------- */
+        .hero {
+            padding: 80px 0 60px;
+        }
+
+        .hero-grid {
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            gap: 56px;
+            align-items: center;
+        }
+
+        @media (max-width:960px) {
+            .hero-grid {
+                grid-template-columns: 1fr;
+                gap: 40px;
+            }
+        }
+
+        .eyebrow-mark {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+            color: var(--ok);
+            background: var(--ok-soft);
+            border: 1px solid var(--ok);
+            padding: 6px 12px;
+            border-radius: var(--radius-full, 999px);
+            margin-bottom: 22px;
+        }
+
+        h1.headline {
+            font-size: clamp(2.2rem, 4.6vw, 3.6rem);
+            font-weight: 700;
+        }
+
+        .headline .accent-word {
+            color: var(--accent);
+        }
+
+        .sub {
+            margin-top: 20px;
+            font-size: 1.15rem;
+            color: var(--ink-soft);
+            max-width: 46ch;
+        }
+
+        .hero-ctas {
+            display: flex;
+            gap: 14px;
+            margin-top: 32px;
+            flex-wrap: wrap;
+        }
+
+        .trust-line {
+            margin-top: 26px;
+            font-size: 0.9rem;
+            color: var(--ink-soft);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .trust-line svg {
+            flex: none;
+            color: var(--ok);
+        }
+
+        .hero-visual {
+            opacity: 0;
+            transform: translateY(18px);
+            animation: heroIn 0.7s ease 0.15s forwards;
+        }
+
+        @keyframes heroIn {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .hero-visual {
+                animation: none;
+                opacity: 1;
+                transform: none;
+            }
+        }
+
+        .code-card {
+            background: var(--paper-raised);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+        }
+
+        .code-card-top {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--grid-line);
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--border);
+        }
+
+        .code-card-top span.filename {
+            margin-left: 8px;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--ink-soft);
+        }
+
+        .code-card pre {
+            margin: 0;
+            padding: 22px;
+            font-family: var(--font-mono);
+            font-size: 0.86rem;
+            overflow-x: auto;
+            color: var(--ink);
+            line-height: 1.75;
+        }
+
+        .code-card pre .kw {
+            color: var(--accent);
+        }
+
+        .code-card pre .cm {
+            color: var(--ink-soft);
+        }
+
+        .code-out {
+            margin: 0 22px 22px;
+            padding: 14px 16px;
+            border-radius: var(--radius-sm);
+            background: var(--accent-soft);
+            border: 1px dashed var(--accent);
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .code-out svg {
+            flex: none;
+            color: var(--accent);
+        }
+
+        /* ---------- Section heads ---------- */
+        .section-head {
+            max-width: 640px;
+            margin-bottom: 48px;
+        }
+
+        .section-head .kicker {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--accent);
+            display: block;
+            margin-bottom: 12px;
+        }
+
+        .section-head h2 {
+            font-size: clamp(1.7rem, 3vw, 2.3rem);
+        }
+
+        .section-head p {
+            margin-top: 14px;
+            color: var(--ink-soft);
+            font-size: 1.05rem;
+        }
+
+        /* ---------- Problem section ---------- */
+        .problem-list {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        @media (max-width:860px) {
+            .problem-list {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .problem-card {
+            background: var(--paper-raised);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 26px;
+        }
+
+        .problem-card .mark {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            background: var(--accent-soft);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--accent);
+            margin-bottom: 16px;
+        }
+
+        .problem-card h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .problem-card p {
+            color: var(--ink-soft);
+            font-size: 0.96rem;
+        }
+
+        /* ---------- Features ---------- */
+        .features {
+            background: var(--paper-raised);
+            border-top: 1px solid var(--grid-line);
+            border-bottom: 1px solid var(--grid-line);
+        }
+
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1px;
+            background: var(--grid-line);
+            border: 1px solid var(--grid-line);
+            border-radius: var(--radius-md);
+            overflow: hidden;
+        }
+
+        @media (max-width:860px) {
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .feature-item {
+            background: var(--paper-raised);
+            padding: 30px;
+            opacity: 0;
+            transform: translateY(14px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
+        }
+
+        .feature-item.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .feature-item .ico {
+            width: 44px;
+            height: 44px;
+            border-radius: 12px;
+            background: var(--accent-soft);
+            color: var(--accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 18px;
+        }
+
+        .feature-item h3 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .feature-item p {
+            color: var(--ink-soft);
+            font-size: 0.95rem;
+        }
+
+        /* ---------- How it works ---------- */
+        .steps {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 32px;
+            counter-reset: step;
+        }
+
+        @media (max-width:860px) {
+            .steps {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .step {
+            position: relative;
+            padding-top: 8px;
+        }
+
+        .step .num {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--accent);
+            display: block;
+            margin-bottom: 14px;
+        }
+
+        .step h3 {
+            font-size: 1.15rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+
+        .step p {
+            color: var(--ink-soft);
+            font-size: 0.96rem;
+        }
+
+        /* ---------- Testimonials ---------- */
+        .testimonials {
+            background: var(--paper-raised);
+            border-top: 1px solid var(--grid-line);
+            border-bottom: 1px solid var(--grid-line);
+        }
+
+        .t-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+        }
+
+        @media (max-width:860px) {
+            .t-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .t-card {
+            border: 1px solid var(--border);
+            border-radius: var(--radius-md);
+            padding: 26px;
+            background: var(--paper);
+        }
+
+        .t-card p.quote {
+            font-size: 1rem;
+            color: var(--ink);
+        }
+
+        .t-card .author {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 20px;
+        }
+
+        .avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--ink);
+            color: var(--paper);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-mono);
+            font-weight: 700;
+            font-size: 0.85rem;
+            flex: none;
+        }
+
+        .author strong {
+            display: block;
+            font-size: 0.92rem;
+        }
+
+        .author span {
+            display: block;
+            font-size: 0.82rem;
+            color: var(--ink-soft);
+        }
+
+        /* ---------- Pricing ---------- */
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 24px;
+            align-items: stretch;
+        }
+
+        @media (max-width:860px) {
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .plan {
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+            padding: 32px;
+            background: var(--paper-raised);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .plan.featured {
+            border: 2px solid var(--accent);
+            box-shadow: var(--shadow-md);
+            position: relative;
+        }
+
+        .plan-badge {
+            position: absolute;
+            top: -13px;
+            left: 28px;
+            background: var(--accent);
+            color: #fff;
+            font-family: var(--font-mono);
+            font-size: 0.72rem;
+            padding: 4px 10px;
+            border-radius: 999px;
+        }
+
+        .plan h3 {
+            font-size: 1.1rem;
+            font-weight: 700;
+        }
+
+        .plan .price {
+            font-family: var(--font-mono);
+            font-size: 2.1rem;
+            margin: 16px 0 4px;
+        }
+
+        .plan .price span {
+            font-size: 0.95rem;
+            color: var(--ink-soft);
+            font-family: var(--font-body);
+        }
+
+        .plan .plan-desc {
+            color: var(--ink-soft);
+            font-size: 0.9rem;
+            margin-bottom: 24px;
+        }
+
+        .plan ul {
+            list-style: none;
+            margin: 0 0 28px;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .plan li {
+            display: flex;
+            gap: 10px;
+            font-size: 0.92rem;
+            align-items: flex-start;
+        }
+
+        .plan li svg {
+            flex: none;
+            color: var(--ok);
+            margin-top: 2px;
+        }
+
+        /* ---------- FAQ ---------- */
+        .faq {
+            max-width: 760px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            border-bottom: 1px solid var(--grid-line);
+        }
+
+        .faq-q {
+            width: 100%;
+            text-align: left;
+            background: none;
+            border: none;
+            padding: 22px 4px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 16px;
+            font-family: var(--font-body);
+            font-weight: 600;
+            font-size: 1rem;
+            color: var(--ink);
+        }
+
+        .faq-q svg {
+            flex: none;
+            transition: transform 0.25s ease;
+            color: var(--accent);
+        }
+
+        .faq-item.open .faq-q svg {
+            transform: rotate(45deg);
+        }
+
+        .faq-a {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+
+        .faq-item.open .faq-a {
+            max-height: 220px;
+        }
+
+        .faq-a p {
+            padding: 0 4px 22px;
+            color: var(--ink-soft);
+            font-size: 0.95rem;
+            max-width: 64ch;
+        }
+
+        /* ---------- Final CTA ---------- */
+        .final-cta {
+            background: var(--ink);
+            color: var(--paper);
+            border-radius: var(--radius-lg);
+            padding: 64px 48px;
+            text-align: center;
+        }
+
+        @media (max-width:640px) {
+            .final-cta {
+                padding: 44px 24px;
+            }
+        }
+
+        .final-cta h2 {
+            color: var(--paper);
+            font-size: clamp(1.6rem, 3.4vw, 2.2rem);
+        }
+
+        .final-cta p {
+            color: #b9c2d1;
+            margin-top: 14px;
+            font-size: 1.05rem;
+        }
+
+        .final-cta .hero-ctas {
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .final-cta .btn-ghost {
+            border-color: #3c4a63;
+            color: var(--paper);
+        }
+
+        .final-cta .btn-ghost:hover {
+            border-color: var(--paper);
+        }
+
+        /* ---------- Footer ---------- */
+        footer {
+            border-top: 1px solid var(--grid-line);
+            padding: 56px 0 28px;
+        }
+
+        .footer-top {
+            display: grid;
+            grid-template-columns: 1.4fr repeat(3, 1fr);
+            gap: 32px;
+            margin-bottom: 48px;
+        }
+
+        @media (max-width:760px) {
+            .footer-top {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        .footer-brand p {
+            margin-top: 14px;
+            color: var(--ink-soft);
+            font-size: 0.92rem;
+            max-width: 32ch;
+        }
+
+        .footer-col h4 {
+            font-family: var(--font-mono);
+            font-size: 0.82rem;
+            color: var(--ink-soft);
+            margin-bottom: 16px;
+            font-weight: 400;
+        }
+
+        .footer-col ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .footer-col a {
+            text-decoration: none;
+            font-size: 0.92rem;
+            color: var(--ink);
+        }
+
+        .footer-col a:hover {
+            color: var(--accent);
+        }
+
+        .footer-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            padding-top: 24px;
+            border-top: 1px solid var(--grid-line);
+            font-size: 0.85rem;
+            color: var(--ink-soft);
+        }
+
+        .socials {
+            display: flex;
+            gap: 14px;
+        }
+
+        .socials a {
+            width: 36px;
+            height: 36px;
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .socials a:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+    </style>
+</head>
+
+<body>
+
+    <header class="nav" id="siteNav">
+        <div class="nav-inner">
+            <a href="#top" class="logo"><span class="brackets">[</span>índice<span class="brackets">0]</span></a>
+            <nav>
+                <ul class="nav-links">
+                    <li><a href="#conteudo">Conteúdo</a></li>
+                    <li><a href="#como-funciona">Como funciona</a></li>
+                    <li><a href="#planos">Planos</a></li>
+                    <li><a href="#depoimentos">Depoimentos</a></li>
+                    <li><a href="#faq">FAQ</a></li>
+                </ul>
+            </nav>
+            <div class="nav-right">
+                <a href="#planos" class="btn btn-ghost">Ver planos</a>
+                <button class="burger" id="burgerBtn" aria-label="Abrir menu" aria-expanded="false">
+                    <span class="burger-icon"><span></span><span></span><span></span></span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main id="top">
+
+        <!-- HERO -->
+        <section class="hero">
+            <div class="wrap hero-grid">
+                <div>
+                    <span class="eyebrow-mark">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5">
+                            <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                        Baseado em questões reais de bancas técnicas
+                    </span>
+                    <h1 class="headline">Domine laços e vetores <span class="accent-word">antes da prova</span></h1>
+                    <p class="sub">Um curso direto ao ponto sobre comandos de repetição e vetores em linguagem C, com
+                        resumos objetivos e centenas de questões comentadas, no mesmo estilo que aparece em provas
+                        técnicas.</p>
+                    <div class="hero-ctas">
+                        <a href="#planos" class="btn btn-primary">Começar agora</a>
+                        <a href="#conteudo" class="btn btn-ghost">Ver questão de exemplo</a>
+                    </div>
+                    <p class="trust-line">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                        </svg>
+                        Mais de 1.200 pessoas revisando lógica de programação toda semana
+                    </p>
+                </div>
+
+                <div class="hero-visual">
+                    <div class="code-card">
+                        <div class="code-card-top">
+                            <span class="dot" style="background:#e0472c"></span>
+                            <span class="dot" style="background:#d9b13a"></span>
+                            <span class="dot" style="background:#1f7a4d"></span>
+                            <span class="filename">questao_38.c</span>
+                        </div>
+                        <pre><span class="kw">int</span> qtp=0, qti=0, nro;
+<span class="kw">while</span> (true){
+    scanf(<span class="cm">"%d"</span>, &nro);
+    <span class="kw">if</span>(nro &lt; 0)
+        <span class="kw">break</span>;
+    <span class="kw">if</span> ((nro % 2)==0)
+        qtp++;
+    <span class="kw">else</span>
+        qti++;
+}</pre>
+                        <div class="code-out">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            entrada 2,0,7,8,9,1,-2 → qtp=3, qti=3
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PROBLEMA -->
+        <section id="conteudo">
+            <div class="wrap">
+                <div class="section-head">
+                    <span class="kicker">// onde a maioria perde pontos</span>
+                    <h2>Três erros que aparecem em quase toda prova</h2>
+                    <p>Você entende a teoria — mas sob o cronômetro, os mesmos deslizes se repetem. Reconhece algum
+                        destes?</p>
+                </div>
+                <div class="problem-list">
+                    <div class="problem-card">
+                        <div class="mark">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <rect x="3" y="3" width="18" height="18" rx="2" />
+                                <line x1="9" y1="3" x2="9" y2="21" />
+                            </svg>
+                        </div>
+                        <h3>Índice fora do intervalo</h3>
+                        <p>Você sabe que um vetor de tamanho 10 vai de <code>vet[0]</code> a <code>vet[9]</code> — mas
+                            sob pressão, ainda marca <code>vet[10]</code> como válido.</p>
+                    </div>
+                    <div class="problem-card">
+                        <div class="mark">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M17 1l4 4-4 4" />
+                                <path d="M3 11V9a4 4 0 0 1 4-4h14" />
+                                <path d="M7 23l-4-4 4-4" />
+                                <path d="M21 13v2a4 4 0 0 1-4 4H3" />
+                            </svg>
+                        </div>
+                        <h3>Limite errado no laço</h3>
+                        <p>Trocar <code>i &lt; n</code> por <code>i &lt;= n</code> muda o número de repetições — e
+                            derruba a resposta inteira sem você perceber.</p>
+                    </div>
+                    <div class="problem-card">
+                        <div class="mark">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path d="M12 9v4" />
+                                <path d="M12 17h.01" />
+                                <path
+                                    d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
+                            </svg>
+                        </div>
+                        <h3>Vetor não inicializado</h3>
+                        <p>Esquecer que um vetor sem valores atribuídos guarda "lixo de memória" é a pegadinha clássica
+                            das alternativas de múltipla escolha.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FEATURES -->
+        <section class="features">
+            <div class="wrap">
+                <div class="section-head">
+                    <span class="kicker">// como resolvemos isso</span>
+                    <h2>Tudo o que você precisa para não errar de novo</h2>
+                    <p>Seis frentes de estudo pensadas para quem precisa transformar teoria em acerto na hora da prova.
+                    </p>
+                </div>
+                <div class="feature-grid" id="featureGrid">
+                    <div class="feature-item">
+                        <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+                            </svg></div>
+                        <h3>Trilha por tópico</h3>
+                        <p>Laços, vetores, matrizes e ponteiros organizados em ordem de dificuldade — comece pelo que te
+                            derruba com mais frequência.</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <circle cx="11" cy="11" r="8" />
+                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
+                            </svg></div>
+                        <h3>Banco de questões comentadas</h3>
+                        <p>Centenas de questões no estilo de bancas como FGV, Cebraspe, FCC e Vunesp, com explicação
+                            linha a linha do código.</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                                <polyline points="14 2 14 8 20 8" />
+                                <line x1="16" y1="13" x2="8" y2="13" />
+                                <line x1="16" y1="17" x2="8" y2="17" />
+                            </svg></div>
+                        <h3>Resumos teóricos objetivos</h3>
+                        <p>Sem enrolação: só a teoria que realmente cai, com exemplos de código prontos para revisar em
+                            poucos minutos.</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg></div>
+                        <h3>Quizzes com correção imediata</h3>
+                        <p>Cada erro vem com a explicação do porquê — não só da resposta certa, mas de onde o raciocínio
+                            desviou.</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <circle cx="12" cy="12" r="10" />
+                                <polyline points="12 6 12 12 16 14" />
+                            </svg></div>
+                        <h3>Simulados cronometrados</h3>
+                        <p>Treine sob a mesma pressão de tempo da prova real, com questões misturadas de todos os
+                            tópicos estudados.</p>
+                    </div>
+                    <div class="feature-item">
+                        <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"
+                                stroke="currentColor" stroke-width="2">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+                            </svg></div>
+                        <h3>Tira-dúvidas com monitor</h3>
+                        <p>Travou num trecho de código? Poste a dúvida e receba resposta de quem já corrigiu centenas de
+                            questões parecidas.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- COMO FUNCIONA -->
+        <section id="como-funciona">
+            <div class="wrap">
+                <div class="section-head">
+                    <span class="kicker">// como funciona</span>
+                    <h2>Três passos, do resumo ao acerto</h2>
+                </div>
+                <div class="steps">
+                    <div class="step">
+                        <span class="num">01</span>
+                        <h3>Escolha o tópico</h3>
+                        <p>Comece por comandos de repetição, vetores, ou vá direto ao ponto onde mais costuma errar.</p>
+                    </div>
+                    <div class="step">
+                        <span class="num">02</span>
+                        <h3>Estude e resolva</h3>
+                        <p>Leia o resumo teórico curto e já emende para questões reais no mesmo tema — sem intervalo
+                            entre teoria e prática.</p>
+                    </div>
+                    <div class="step">
+                        <span class="num">03</span>
+                        <h3>Revise os erros</h3>
+                        <p>Veja a explicação linha a linha do código e refaça a questão até acertar sem hesitar.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- DEPOIMENTOS -->
+        <section class="testimonials" id="depoimentos">
+            <div class="wrap">
+                <div class="section-head">
+                    <span class="kicker">// quem já passou por isso</span>
+                    <h2>Resultado de quem revisou até não errar mais</h2>
+                </div>
+                <div class="t-grid">
+                    <div class="t-card">
+                        <p class="quote">"Refazer as questões de vetor até não errar mais foi o que fez diferença na
+                            minha prova. O erro de índice, que sempre me pegava, parou de acontecer."</p>
+                        <div class="author">
+                            <div class="avatar">RM</div>
+                            <div><strong>Rafaela M.</strong><span>Aprovada em concurso de Analista de TI</span></div>
+                        </div>
+                    </div>
+                    <div class="t-card">
+                        <p class="quote">"Eu confundia o limite do for direto. Depois de treinar com os simulados
+                            cronometrados, isso simplesmente parou de acontecer."</p>
+                        <div class="author">
+                            <div class="avatar">DS</div>
+                            <div><strong>Diego S.</strong><span>Estudante de Ciência da Computação</span></div>
+                        </div>
+                    </div>
+                    <div class="t-card">
+                        <p class="quote">"Os resumos são curtos o suficiente pra revisar no intervalo do trabalho, e as
+                            questões comentadas explicam exatamente onde eu errava."</p>
+                        <div class="author">
+                            <div class="avatar">CT</div>
+                            <div><strong>Camila T.</strong><span>Aprovada em concurso técnico</span></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- PRICING -->
+        <section id="planos">
+            <div class="wrap">
+                <div class="section-head">
+                    <span class="kicker">// planos</span>
+                    <h2>Escolha o ritmo do seu estudo</h2>
+                    <p>Comece de graça e avance para o plano completo quando quiser treinar sob o tempo real da prova.
+                    </p>
+                </div>
+                <div class="pricing-grid">
+                    <div class="plan">
+                        <h3>Grátis</h3>
+                        <div class="price">R$0</div>
+                        <p class="plan-desc">Para conhecer o método antes de decidir.</p>
+                        <ul>
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="3">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg>Resumos teóricos completos</li>
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="3">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg>20 questões comentadas por semana</li>
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="3">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg>Acesso à comunidade de dúvidas</li>
+                        </ul>
+                        <a href="#" class="btn btn-ghost btn-block">Começar grátis</a>
+                    </div>
+                    <div class="plan featured">
+                        <span class="plan-badge">Mais escolhido</span>
+                        <h3>Essencial</h3>
+                        <div class="price">R$29<span>/mês</span></div>
+                        <p class="plan-desc">Para quem estuda com regularidade toda semana.</p>
+                        <ul>
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="3">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg>Banco completo de questões</li>
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="3">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg>Quizzes com correção imediata</li>
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="3">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg>Trilha completa por tópico</li>
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="3">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg>Tira-dúvidas com monitor</li>
+                        </ul>
+                        <a href="#" class="btn btn-primary btn-block">Começar agora</a>
+                    </div>
+                    <div class="plan">
+                        <h3>Completo</h3>
+                        <div class="price">R$49<span>/mês</span></div>
+                        <p class="plan-desc">Para quem está na reta final antes da prova.</p>
+                        <ul>
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="3">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg>Tudo do plano Essencial</li>
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="3">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg>Simulados cronometrados ilimitados</li>
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="3">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg>Relatório de erros por tópico</li>
+                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="3">
+                                    <polyline points="20 6 9 17 4 12" />
+                                </svg>Mentoria em grupo quinzenal</li>
+                        </ul>
+                        <a href="#" class="btn btn-ghost btn-block">Assinar Completo</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FAQ -->
+        <section id="faq">
+            <div class="wrap">
+                <div class="section-head" style="margin-left:auto;margin-right:auto;text-align:left;">
+                    <span class="kicker">// perguntas frequentes</span>
+                    <h2>Ainda com dúvidas?</h2>
+                </div>
+                <div class="faq" id="faqList">
+                    <div class="faq-item open">
+                        <button class="faq-q">Preciso saber programar antes de começar?
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5">
+                                <line x1="12" y1="5" x2="12" y2="19" />
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                            </svg>
+                        </button>
+                        <div class="faq-a">
+                            <p>Não. A trilha começa pelos fundamentos — variáveis, laços e vetores — antes de avançar
+                                para tópicos mais complexos como ponteiros e matrizes.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-q">As questões seguem alguma banca específica?
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5">
+                                <line x1="12" y1="5" x2="12" y2="19" />
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                            </svg>
+                        </button>
+                        <div class="faq-a">
+                            <p>O banco de questões cobre o estilo mais comum em provas técnicas de bancas como FGV,
+                                Cebraspe, FCC e Vunesp, focando nos padrões de pegadinha que mais se repetem.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-q">Funciona pelo celular?
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5">
+                                <line x1="12" y1="5" x2="12" y2="19" />
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                            </svg>
+                        </button>
+                        <div class="faq-a">
+                            <p>Sim. A plataforma é totalmente responsiva — resumos e questões podem ser resolvidos no
+                                navegador do celular sem perder formatação.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-q">Posso cancelar quando quiser?
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5">
+                                <line x1="12" y1="5" x2="12" y2="19" />
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                            </svg>
+                        </button>
+                        <div class="faq-a">
+                            <p>Sim, sem multa e sem burocracia. O acesso continua ativo até o fim do período já pago.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <button class="faq-q">Vocês cobrem outras linguagens além de C?
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2.5">
+                                <line x1="12" y1="5" x2="12" y2="19" />
+                                <line x1="5" y1="12" x2="19" y2="12" />
+                            </svg>
+                        </button>
+                        <div class="faq-a">
+                            <p>Hoje o foco é 100% em C, justamente por ser a linguagem mais cobrada em provas de lógica
+                                de programação. Outras linguagens estão nos planos futuros.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FINAL CTA -->
+        <section>
+            <div class="wrap">
+                <div class="final-cta">
+                    <h2>Pronto para acertar a próxima questão de vetor?</h2>
+                    <p>Comece de graça hoje e sinta a diferença na primeira lista de questões.</p>
+                    <div class="hero-ctas">
+                        <a href="#planos" class="btn btn-primary">Começar agora</a>
+                        <a href="#faq" class="btn btn-ghost">Tirar dúvidas</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="wrap">
+            <div class="footer-top">
+                <div class="footer-brand">
+                    <a href="#top" class="logo"><span class="brackets">[</span>índice<span
+                            class="brackets">0]</span></a>
+                    <p>Estudo direto ao ponto de lógica de programação em C, para quem precisa acertar na prova.</p>
+                </div>
+                <div class="footer-col">
+                    <h4>Produto</h4>
+                    <ul>
+                        <li><a href="#conteudo">Conteúdo</a></li>
+                        <li><a href="#como-funciona">Como funciona</a></li>
+                        <li><a href="#planos">Planos</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Empresa</h4>
+                    <ul>
+                        <li><a href="#">Sobre</a></li>
+                        <li><a href="#">Contato</a></li>
+                        <li><a href="#">Trabalhe conosco</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Legal</h4>
+                    <ul>
+                        <li><a href="#">Termos de uso</a></li>
+                        <li><a href="#">Privacidade</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <span>© 2026 índice[0]. Todos os direitos reservados.</span>
+                <div class="socials">
+                    <a href="#" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="2" width="20" height="20" rx="5" />
+                            <circle cx="12" cy="12" r="4" />
+                            <line x1="17.5" y1="6.5" x2="17.5" y2="6.5" />
+                        </svg></a>
+                    <a href="#" aria-label="LinkedIn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+                            <rect x="2" y="9" width="4" height="12" />
+                            <circle cx="4" cy="4" r="2" />
+                        </svg></a>
+                    <a href="#" aria-label="YouTube"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path
+                                d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z" />
+                            <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" />
+                        </svg></a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        const nav = document.getElementById('siteNav');
+        const burgerBtn = document.getElementById('burgerBtn');
+        burgerBtn.addEventListener('click', () => {
+            const isOpen = nav.classList.toggle('open');
+            burgerBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        });
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                nav.classList.remove('open');
+                burgerBtn.setAttribute('aria-expanded', 'false');
+            });
+        });
+
+        // FAQ accordion
+        document.querySelectorAll('.faq-item').forEach(item => {
+            item.querySelector('.faq-q').addEventListener('click', () => {
+                const willOpen = !item.classList.contains('open');
+                document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
+                if (willOpen) item.classList.add('open');
+            });
+        });
+
+        // Staggered reveal for feature cards
+        try {
+            const items = document.querySelectorAll('.feature-item');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach((entry, order) => {
+                    if (entry.isIntersecting) {
+                        const idx = Array.from(items).indexOf(entry.target);
+                        entry.target.style.transitionDelay = (idx % 3) * 90 + 'ms';
+                        entry.target.classList.add('visible');
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.15 });
+            items.forEach(el => observer.observe(el));
+        } catch (e) {
+            document.querySelectorAll('.feature-item').forEach(el => el.classList.add('visible'));
+        }
+    </script>
+
+</body>
+
+</html>
