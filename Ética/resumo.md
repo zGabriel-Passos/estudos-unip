@@ -407,7 +407,7 @@ Agenda 2030   Síntese e
 #### Códigos de Ética
 
 **Tipos:**
-1. **Profissionais**: direitos, deveres, proibições, sanções
+1. **Profissionais**: direitos, deveres, priobições, sanções
 2. **Empresariais**: missão, visão, valores, princípios
 3. **Internacional**: veracidade, integridade, equidade
 

@@ -1,0 +1,1564 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Modelos de Banco de Dados & MER</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Zilla+Slab:wght@400;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --ink: #1c2333;
+            --ink-soft: #5b6478;
+            --paper: #f4f6f4;
+            --paper-raised: #ffffff;
+            --line: #dde3df;
+            --entity: #3f6ea5;
+            --entity-soft: rgba(63, 110, 165, 0.09);
+            --attr: #a9791f;
+            --attr-soft: rgba(169, 121, 31, 0.10);
+            --rel: #5b8c3a;
+            --rel-soft: rgba(91, 140, 58, 0.10);
+            --pk: #a63b3b;
+            --pk-soft: rgba(166, 59, 59, 0.09);
+            --shadow-sm: 0 1px 3px rgba(28, 35, 51, 0.07);
+            --shadow-md: 0 6px 20px rgba(28, 35, 51, 0.09);
+            --shadow-lg: 0 18px 44px rgba(28, 35, 51, 0.14);
+            --radius-sm: 5px;
+            --radius-md: 10px;
+            --radius-lg: 16px;
+            --font-display: 'Zilla Slab', Georgia, serif;
+            --font-body: 'IBM Plex Sans', -apple-system, sans-serif;
+        }
+
+        :root:not([data-theme="light"]) {
+            @media (prefers-color-scheme: dark) {
+                --ink: #eef1ee;
+                --ink-soft: #aab4ab;
+                --paper: #141a16;
+                --paper-raised: #1c2420;
+                --line: #2b352f;
+                --entity: #7fa8d6;
+                --entity-soft: rgba(127, 168, 214, 0.14);
+                --attr: #d9ad5c;
+                --attr-soft: rgba(217, 173, 92, 0.14);
+                --rel: #8fbf6c;
+                --rel-soft: rgba(143, 191, 108, 0.14);
+                --pk: #e08080;
+                --pk-soft: rgba(224, 128, 128, 0.14);
+                --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
+                --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.4);
+                --shadow-lg: 0 18px 44px rgba(0, 0, 0, 0.55);
+            }
+        }
+
+        :root[data-theme="dark"] {
+            --ink: #eef1ee;
+            --ink-soft: #aab4ab;
+            --paper: #141a16;
+            --paper-raised: #1c2420;
+            --line: #2b352f;
+            --entity: #7fa8d6;
+            --entity-soft: rgba(127, 168, 214, 0.14);
+            --attr: #d9ad5c;
+            --attr-soft: rgba(217, 173, 92, 0.14);
+            --rel: #8fbf6c;
+            --rel-soft: rgba(143, 191, 108, 0.14);
+            --pk: #e08080;
+            --pk-soft: rgba(224, 128, 128, 0.14);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
+            --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 18px 44px rgba(0, 0, 0, 0.55);
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            background: var(--paper);
+            color: var(--ink);
+            font-family: var(--font-body);
+            line-height: 1.65;
+            background-image: radial-gradient(var(--line) 1px, transparent 1px);
+            background-size: 22px 22px;
+            -webkit-font-smoothing: antialiased;
+            overflow-x: hidden;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-family: var(--font-display);
+            line-height: 1.2;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        p {
+            margin: 0;
+        }
+
+        a {
+            color: inherit;
+        }
+
+        code {
+            font-family: 'IBM Plex Mono', monospace;
+            background: var(--entity-soft);
+            color: var(--entity);
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 0.9em;
+        }
+
+        :focus-visible {
+            outline: 2.5px solid var(--entity);
+            outline-offset: 3px;
+            border-radius: 4px;
+        }
+
+        /* ---------- Layout shell ---------- */
+        .shell {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            max-width: 1280px;
+            margin: 0 auto;
+        }
+
+        @media (max-width:940px) {
+            .shell {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* ---------- Top bar (mobile) ---------- */
+        .topbar {
+            display: none;
+            position: sticky;
+            top: 0;
+            z-index: 60;
+            background: color-mix(in srgb, var(--paper) 90%, transparent);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--line);
+            padding: 14px 20px;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        @media (max-width:940px) {
+            .topbar {
+                display: flex;
+            }
+        }
+
+        .topbar-title {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
+
+        .menu-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            border: 1px solid var(--line);
+            background: var(--paper-raised);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ---------- Sidebar ---------- */
+        aside.sidenav {
+            position: sticky;
+            top: 0;
+            align-self: start;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 36px 20px 40px 32px;
+            border-right: 1px solid var(--line);
+        }
+
+        @media (max-width:940px) {
+            aside.sidenav {
+                position: fixed;
+                top: 65px;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                height: auto;
+                background: var(--paper);
+                z-index: 55;
+                padding: 20px 24px;
+                transform: translateY(-110%);
+                transition: transform 0.25s ease;
+            }
+
+            aside.sidenav.open {
+                transform: translateY(0);
+            }
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+
+        .brand .shape-rect {
+            width: 16px;
+            height: 12px;
+            border: 2px solid var(--entity);
+            border-radius: 2px;
+            flex: none;
+        }
+
+        .brand span {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1.05rem;
+        }
+
+        nav.toc {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        nav.toc a {
+            display: block;
+            padding: 8px 10px;
+            border-radius: 7px;
+            font-size: 0.9rem;
+            color: var(--ink-soft);
+            text-decoration: none;
+            border-left: 2px solid transparent;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        nav.toc a:hover {
+            background: var(--entity-soft);
+            color: var(--entity);
+        }
+
+        nav.toc a.active {
+            color: var(--entity);
+            border-left-color: var(--entity);
+            background: var(--entity-soft);
+            font-weight: 600;
+        }
+
+        .toc-group-label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--ink-soft);
+            opacity: 0.65;
+            margin: 18px 0 6px 10px;
+        }
+
+        .toc-group-label:first-of-type {
+            margin-top: 0;
+        }
+
+        /* ---------- Legend chip (interactive) ---------- */
+        .legend {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 22px;
+        }
+
+        .legend-chip {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 12px;
+            border-radius: 999px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: default;
+            border: 1px solid var(--line);
+            background: var(--paper-raised);
+            transition: transform 0.15s ease;
+        }
+
+        .legend-chip:hover {
+            transform: translateY(-1px);
+        }
+
+        .legend-chip .lg-shape {
+            width: 13px;
+            height: 10px;
+            flex: none;
+        }
+
+        .legend-chip[data-kind="entity"] .lg-shape {
+            border: 2px solid var(--entity);
+            border-radius: 2px;
+        }
+
+        .legend-chip[data-kind="entity"] {
+            color: var(--entity);
+        }
+
+        .legend-chip[data-kind="attr"] .lg-shape {
+            border: 2px solid var(--attr);
+            border-radius: 50%;
+            height: 9px;
+        }
+
+        .legend-chip[data-kind="attr"] {
+            color: var(--attr);
+        }
+
+        .legend-chip[data-kind="rel"] .lg-shape {
+            border: 2px solid var(--rel);
+            transform: rotate(45deg);
+            width: 9px;
+            height: 9px;
+        }
+
+        .legend-chip[data-kind="rel"] {
+            color: var(--rel);
+        }
+
+        body[data-hl="entity"] .shape:not(.shape-entity) {
+            opacity: 0.25;
+        }
+
+        body[data-hl="attr"] .shape:not(.shape-attr) {
+            opacity: 0.25;
+        }
+
+        body[data-hl="rel"] .shape:not(.shape-rel) {
+            opacity: 0.25;
+        }
+
+        .shape {
+            transition: opacity 0.2s ease;
+        }
+
+        /* ---------- Main content ---------- */
+        main {
+            padding: 0 0 100px;
+            min-width: 0;
+        }
+
+        .hero {
+            padding: 56px 44px 40px;
+            max-width: 800px;
+        }
+
+        @media (max-width:640px) {
+            .hero {
+                padding: 32px 22px 28px;
+            }
+        }
+
+        .hero h1 {
+            font-size: clamp(2rem, 4.2vw, 2.85rem);
+        }
+
+        .hero .subtitle {
+            margin-top: 6px;
+            color: var(--ink-soft);
+            font-size: 1rem;
+        }
+
+        .hero p.lead {
+            margin-top: 20px;
+            font-size: 1.12rem;
+            color: var(--ink-soft);
+            max-width: 62ch;
+        }
+
+        section {
+            padding: 14px 44px 54px;
+            max-width: 800px;
+        }
+
+        @media (max-width:640px) {
+            section {
+                padding: 10px 22px 44px;
+            }
+        }
+
+        section h2 {
+            font-size: 1.55rem;
+            margin-bottom: 16px;
+            scroll-margin-top: 24px;
+        }
+
+        section h2 .num {
+            color: var(--ink-soft);
+            font-weight: 400;
+            margin-right: 10px;
+            font-size: 0.85em;
+        }
+
+        section>p {
+            color: var(--ink-soft);
+            margin-bottom: 14px;
+            max-width: 68ch;
+        }
+
+        section>p:last-of-type {
+            margin-bottom: 0;
+        }
+
+        section ul {
+            padding-left: 20px;
+            color: var(--ink-soft);
+        }
+
+        section li {
+            margin-bottom: 8px;
+        }
+
+        section li::marker {
+            color: var(--entity);
+        }
+
+        strong {
+            color: var(--ink);
+        }
+
+        hr.divider {
+            border: none;
+            border-top: 1px solid var(--line);
+            max-width: 800px;
+            margin: 0 44px;
+        }
+
+        @media (max-width:640px) {
+            hr.divider {
+                margin: 0 22px;
+            }
+        }
+
+        /* ---------- Abstraction level cards ---------- */
+        .level-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        @media (max-width:700px) {
+            .level-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .level-card {
+            border: 1px solid var(--line);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            background: var(--paper-raised);
+        }
+
+        .level-card .tag {
+            font-size: 0.72rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--entity);
+        }
+
+        .level-card h3 {
+            font-size: 1.05rem;
+            margin-top: 6px;
+        }
+
+        .level-card p {
+            margin-top: 8px;
+            font-size: 0.9rem;
+            color: var(--ink-soft);
+        }
+
+        /* ---------- Phases flow ---------- */
+        .phase-flow {
+            display: flex;
+            flex-direction: column;
+            gap: 0;
+            margin-top: 24px;
+        }
+
+        .phase {
+            display: flex;
+            gap: 18px;
+            position: relative;
+            padding-bottom: 26px;
+        }
+
+        .phase:last-child {
+            padding-bottom: 0;
+        }
+
+        .phase::before {
+            content: '';
+            position: absolute;
+            left: 17px;
+            top: 38px;
+            bottom: 0;
+            width: 2px;
+            background: var(--line);
+        }
+
+        .phase:last-child::before {
+            display: none;
+        }
+
+        .phase-num {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--entity-soft);
+            color: var(--entity);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+            font-weight: 700;
+            flex: none;
+            z-index: 1;
+        }
+
+        .phase-body h3 {
+            font-size: 1rem;
+            margin-bottom: 4px;
+        }
+
+        .phase-body p {
+            font-size: 0.9rem;
+            color: var(--ink-soft);
+        }
+
+        .phase-tag {
+            display: inline-block;
+            margin-top: 6px;
+            font-size: 0.72rem;
+            padding: 3px 9px;
+            border-radius: 999px;
+            background: var(--rel-soft);
+            color: var(--rel);
+            font-weight: 600;
+        }
+
+        .phase-tag.dep {
+            background: var(--pk-soft);
+            color: var(--pk);
+        }
+
+        /* ---------- Legend diagram (shapes explainer) ---------- */
+        .shape-explainer {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 16px;
+            margin-top: 22px;
+        }
+
+        @media (max-width:700px) {
+            .shape-explainer {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .shape-card {
+            border: 1px solid var(--line);
+            border-radius: var(--radius-md);
+            padding: 22px;
+            background: var(--paper-raised);
+            text-align: center;
+        }
+
+        .shape-demo {
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 14px;
+        }
+
+        .demo-rect.shape {
+            width: 88px;
+            height: 52px;
+            border: 3px solid var(--entity);
+            border-radius: 4px;
+            background: var(--entity-soft);
+        }
+
+        .demo-oval.shape {
+            width: 96px;
+            height: 48px;
+            border: 3px solid var(--attr);
+            border-radius: 50%;
+            background: var(--attr-soft);
+        }
+
+        .demo-diamond.shape {
+            width: 56px;
+            height: 56px;
+            border: 3px solid var(--rel);
+            background: var(--rel-soft);
+            transform: rotate(45deg);
+            border-radius: 6px;
+        }
+
+        .shape-card h3 {
+            font-size: 0.98rem;
+        }
+
+        .shape-card p {
+            font-size: 0.86rem;
+            color: var(--ink-soft);
+            margin-top: 6px;
+        }
+
+        /* ---------- Entity examples chips ---------- */
+        .chip-groups {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-top: 20px;
+        }
+
+        .chip-group-label {
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--ink-soft);
+            margin-bottom: 8px;
+            display: block;
+        }
+
+        .chip-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .ent-chip {
+            padding: 8px 14px;
+            border: 2px solid var(--entity);
+            border-radius: var(--radius-sm);
+            background: var(--entity-soft);
+            color: var(--entity);
+            font-weight: 600;
+            font-size: 0.88rem;
+        }
+
+        /* ---------- Attribute type table ---------- */
+        .attr-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 0.92rem;
+        }
+
+        .attr-table th,
+        .attr-table td {
+            text-align: left;
+            padding: 11px 14px;
+            border-bottom: 1px solid var(--line);
+        }
+
+        .attr-table th {
+            color: var(--ink-soft);
+            font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+        }
+
+        .attr-table td:first-child {
+            font-weight: 700;
+            color: var(--attr);
+            white-space: nowrap;
+        }
+
+        .attr-table code {
+            white-space: nowrap;
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+        }
+
+        /* ---------- Entity + attribute chip diagram (Pedido) ---------- */
+        .entity-diagram {
+            margin-top: 24px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            background: var(--paper-raised);
+        }
+
+        .entity-diagram .ent-box.shape {
+            display: inline-block;
+            padding: 12px 24px;
+            border: 2.5px solid var(--entity);
+            border-radius: var(--radius-sm);
+            background: var(--entity-soft);
+            color: var(--entity);
+            font-weight: 700;
+            font-family: var(--font-display);
+            font-size: 1.05rem;
+            margin-bottom: 20px;
+        }
+
+        .attr-chip {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 7px 13px;
+            border-radius: 999px;
+            border: 2px solid var(--attr);
+            background: var(--attr-soft);
+            color: var(--attr);
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin: 4px 6px 4px 0;
+        }
+
+        .attr-chip.derived {
+            border-style: dashed;
+        }
+
+        .attr-chip.multivalued {
+            border-width: 2px;
+            box-shadow: 0 0 0 3px var(--attr-soft);
+        }
+
+        .attr-chip.pk {
+            border-color: var(--pk);
+            background: var(--pk-soft);
+            color: var(--pk);
+        }
+
+        .attr-chip.pk::before {
+            content: '●';
+            font-size: 0.6rem;
+        }
+
+        .composite-box {
+            display: inline-flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 10px 14px;
+            border-radius: var(--radius-sm);
+            border: 2px solid var(--attr);
+            background: var(--attr-soft);
+            margin: 4px 6px 4px 0;
+            vertical-align: top;
+        }
+
+        .composite-box>.composite-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--attr);
+        }
+
+        .composite-sub {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+            margin-top: 2px;
+        }
+
+        .composite-sub span {
+            font-size: 0.76rem;
+            background: var(--paper-raised);
+            border: 1px solid var(--attr);
+            border-radius: 999px;
+            padding: 3px 9px;
+            color: var(--attr);
+        }
+
+        .diagram-legend-mini {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+            margin-top: 20px;
+            padding-top: 16px;
+            border-top: 1px dashed var(--line);
+            font-size: 0.78rem;
+            color: var(--ink-soft);
+        }
+
+        .diagram-legend-mini span {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .lm-box {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+            flex: none;
+        }
+
+        /* ---------- Primary key example ---------- */
+        .pk-diagram {
+            margin-top: 22px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-lg);
+            padding: 28px;
+            background: var(--paper-raised);
+        }
+
+        .pk-row {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            flex-wrap: wrap;
+        }
+
+        .pk-arrow {
+            color: var(--pk);
+            font-weight: 700;
+            font-size: 0.85rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        /* ---------- Relationship rows ---------- */
+        .rel-examples {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-top: 22px;
+        }
+
+        .rel-row {
+            display: flex;
+            align-items: center;
+            gap: 0;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-md);
+            padding: 20px 16px;
+            background: var(--paper-raised);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .ent-box.shape {
+            padding: 11px 18px;
+            border: 2.5px solid var(--entity);
+            border-radius: var(--radius-sm);
+            background: var(--entity-soft);
+            color: var(--entity);
+            font-weight: 700;
+            font-size: 0.92rem;
+            white-space: nowrap;
+            flex: none;
+        }
+
+        .rel-line {
+            flex: 1 1 40px;
+            min-width: 24px;
+            height: 2px;
+            background: var(--line);
+            position: relative;
+            margin: 0 -2px;
+            align-self: center;
+        }
+
+        .rel-line .card-label {
+            position: absolute;
+            top: -22px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 0.72rem;
+            color: var(--ink-soft);
+            white-space: nowrap;
+            font-weight: 600;
+        }
+
+        .diamond-wrap.shape {
+            position: relative;
+            width: 112px;
+            height: 64px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: none;
+        }
+
+        .diamond-bg {
+            position: absolute;
+            inset: 9px;
+            background: var(--rel-soft);
+            border: 2.5px solid var(--rel);
+            transform: rotate(45deg);
+            border-radius: 5px;
+        }
+
+        .diamond-label {
+            position: relative;
+            z-index: 1;
+            font-size: 0.82rem;
+            font-weight: 700;
+            color: var(--rel);
+            text-align: center;
+            padding: 0 6px;
+        }
+
+        /* ---------- Full example (Aluno x Cursos) ---------- */
+        .full-example {
+            margin-top: 22px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-lg);
+            padding: 30px 22px;
+            background: var(--paper-raised);
+        }
+
+        @media (max-width:640px) {
+            .full-example {
+                padding: 22px 14px;
+            }
+        }
+
+        .full-example .rel-row {
+            border: none;
+            padding: 8px 0;
+            background: transparent;
+        }
+
+        .side-attrs {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+            margin-top: 10px;
+        }
+
+        .side-attrs .attr-chip {
+            margin: 2px;
+        }
+
+        .ent-col {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* ---------- Exercise cards ---------- */
+        .exercise-list {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            margin-top: 20px;
+        }
+
+        .exercise-card {
+            border: 1px solid var(--line);
+            border-left: 3px solid var(--entity);
+            border-radius: var(--radius-md);
+            padding: 18px 20px;
+            background: var(--paper-raised);
+        }
+
+        .exercise-card .ex-num {
+            font-family: var(--font-display);
+            font-weight: 700;
+            color: var(--entity);
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+            display: block;
+        }
+
+        .exercise-card p {
+            color: var(--ink);
+            font-size: 0.94rem;
+        }
+
+        .exercise-card .ent-hints {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        .exercise-card .ent-hints span {
+            font-size: 0.78rem;
+            padding: 4px 10px;
+            border-radius: 999px;
+            border: 1px solid var(--entity);
+            color: var(--entity);
+        }
+
+        /* ---------- Glossary ---------- */
+        .glossary-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-top: 20px;
+        }
+
+        @media (max-width:640px) {
+            .glossary-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .gloss-item {
+            border: 1px solid var(--line);
+            border-radius: var(--radius-md);
+            padding: 16px 18px;
+            background: var(--paper-raised);
+        }
+
+        .gloss-item dt {
+            font-weight: 700;
+            font-family: var(--font-display);
+            font-size: 0.98rem;
+            margin-bottom: 4px;
+        }
+
+        .gloss-item dd {
+            margin: 0;
+            font-size: 0.87rem;
+            color: var(--ink-soft);
+        }
+
+        footer {
+            padding: 36px 44px;
+            border-top: 1px solid var(--line);
+            color: var(--ink-soft);
+            font-size: 0.85rem;
+            max-width: 800px;
+        }
+
+        @media (max-width:640px) {
+            footer {
+                padding: 28px 22px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="topbar">
+        <span class="topbar-title">Modelos de BD &amp; MER</span>
+        <button class="menu-btn" id="menuBtn" aria-label="Abrir sumário" aria-expanded="false">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+                <line x1="4" y1="7" x2="20" y2="7" />
+                <line x1="4" y1="12" x2="20" y2="12" />
+                <line x1="4" y1="17" x2="20" y2="17" />
+            </svg>
+        </button>
+    </div>
+
+    <div class="shell">
+
+        <aside class="sidenav" id="sideNav">
+            <div class="brand"><span class="shape-rect"></span><span>Modelos de BD &amp; MER</span></div>
+            <nav class="toc">
+                <span class="toc-group-label">Modelos de Dados</span>
+                <a href="#intro">Visão geral</a>
+                <a href="#niveis">Níveis de abstração</a>
+                <a href="#fases">Fases do projeto</a>
+                <span class="toc-group-label">Modelo E-R</span>
+                <a href="#mer">O que é o MER</a>
+                <a href="#entidade">Entidade</a>
+                <a href="#atributos">Atributos</a>
+                <a href="#chave">Chave primária</a>
+                <a href="#relacionamento">Relacionamento</a>
+                <a href="#exemplo">Exemplo completo</a>
+                <span class="toc-group-label">Praticar</span>
+                <a href="#exercicios">Exercícios</a>
+                <a href="#glossario">Glossário</a>
+            </nav>
+        </aside>
+
+        <main>
+            <div class="hero" id="intro">
+                <p class="subtitle">Prof. Me Cristiane Fidelix — resumo de aula</p>
+                <h1>Modelos de Banco de Dados &amp; Modelo Entidade-Relacionamento</h1>
+                <p class="lead">Da abstração conceitual até o esquema físico: como representamos os dados de um sistema
+                    antes de escrever uma única tabela.</p>
+                <div class="legend">
+                    <span class="legend-chip" data-kind="entity"><span class="lg-shape"></span>Entidade</span>
+                    <span class="legend-chip" data-kind="attr"><span class="lg-shape"></span>Atributo</span>
+                    <span class="legend-chip" data-kind="rel"><span class="lg-shape"></span>Relacionamento</span>
+                </div>
+            </div>
+
+            <hr class="divider">
+
+            <section id="intro2">
+                <h2><span class="num">§</span>O que é um modelo de dados</h2>
+                <p><strong>Modelo de banco de dados</strong> é uma descrição dos tipos de informações que estão
+                    armazenadas em um banco de dados. Para construí-lo, usa-se uma <strong>linguagem de modelagem de
+                        dados</strong> — que pode ser textual ou gráfica.</p>
+                <p>Um modelo define um conjunto de conceitos para representar dados — como entidade, tabela e atributo —
+                    e existe em diferentes <strong>níveis de abstração</strong>, cada um respondendo a uma pergunta
+                    diferente sobre o sistema.</p>
+            </section>
+
+            <section id="niveis">
+                <h2><span class="num">§</span>Níveis de abstração</h2>
+                <p>Do mais abstrato ao mais concreto, todo projeto de banco de dados passa por três camadas de
+                    modelagem:</p>
+                <div class="level-grid">
+                    <div class="level-card">
+                        <span class="tag">Conceitual</span>
+                        <h3>Quais dados?</h3>
+                        <p>Alto nível de abstração, independente de SGBD. Preocupação com a semântica da aplicação.
+                            Principal exemplo: <strong>Modelo Entidade-Relacionamento</strong>.</p>
+                    </div>
+                    <div class="level-card">
+                        <span class="tag">Lógico</span>
+                        <h3>Como estruturar?</h3>
+                        <p>Representa os dados em alguma estrutura lógica — dependente do BD. Exemplos:
+                            <strong>Relacional</strong> (tabelas), Orientado a Objeto, Hierárquico, Rede, Dedutivo.</p>
+                    </div>
+                    <div class="level-card">
+                        <span class="tag">Físico</span>
+                        <h3>Como armazenar?</h3>
+                        <p>Descreve como os dados são salvos fisicamente — discos, métodos de acesso. Dependente tanto
+                            de software quanto de hardware.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="fases">
+                <h2><span class="num">§</span>Fases do projeto de banco de dados</h2>
+                <p>Do mundo real até o sistema em produção, o projeto percorre um caminho definido — cada fase entrega
+                    um esquema que alimenta a próxima:</p>
+                <div class="phase-flow">
+                    <div class="phase">
+                        <div class="phase-num">1</div>
+                        <div class="phase-body">
+                            <h3>Análise de requisitos</h3>
+                            <p>Parte-se do mundo real para levantar requisitos funcionais e requisitos de dados.</p>
+                        </div>
+                    </div>
+                    <div class="phase">
+                        <div class="phase-num">2</div>
+                        <div class="phase-body">
+                            <h3>Projeto conceitual</h3>
+                            <p>Produz o esquema conceitual — o <strong>MER</strong> — a partir dos requisitos de dados.
+                            </p>
+                            <span class="phase-tag">Independente do SGBD</span>
+                        </div>
+                    </div>
+                    <div class="phase">
+                        <div class="phase-num">3</div>
+                        <div class="phase-body">
+                            <h3>Projeto lógico</h3>
+                            <p>Traduz o MER para o esquema lógico — geralmente o <strong>Modelo Relacional</strong>.</p>
+                            <span class="phase-tag dep">Dependente do SGBD</span>
+                        </div>
+                    </div>
+                    <div class="phase">
+                        <div class="phase-num">4</div>
+                        <div class="phase-body">
+                            <h3>Projeto físico</h3>
+                            <p>Define o esquema físico — o modelo de implementação real no disco.</p>
+                            <span class="phase-tag dep">Dependente do SGBD</span>
+                        </div>
+                    </div>
+                    <div class="phase">
+                        <div class="phase-num">5</div>
+                        <div class="phase-body">
+                            <h3>Implementação das transações</h3>
+                            <p>Une o projeto físico ao projeto de programas de aplicação, gerando o sistema final.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <hr class="divider">
+
+            <section id="mer">
+                <h2><span class="num">§</span>Modelo Entidade-Relacionamento (MER)</h2>
+                <p>O MER é o principal <strong>modelo conceitual</strong> usado em projeto de banco de dados. É
+                    representado graficamente pelo <strong>Diagrama de Entidade-Relacionamento (DER)</strong>,
+                    construído a partir de três formas geométricas — passe o cursor sobre cada uma:</p>
+                <div class="shape-explainer">
+                    <div class="shape-card" onmouseenter="setHL('entity')" onmouseleave="setHL(null)">
+                        <div class="shape-demo">
+                            <div class="demo-rect shape shape-entity"></div>
+                        </div>
+                        <h3>Entidade</h3>
+                        <p>Retângulo — um objeto do mundo real sobre o qual mantemos dados.</p>
+                    </div>
+                    <div class="shape-card" onmouseenter="setHL('attr')" onmouseleave="setHL(null)">
+                        <div class="shape-demo">
+                            <div class="demo-oval shape shape-attr"></div>
+                        </div>
+                        <h3>Atributo</h3>
+                        <p>Oval — uma propriedade que caracteriza a entidade.</p>
+                    </div>
+                    <div class="shape-card" onmouseenter="setHL('rel')" onmouseleave="setHL(null)">
+                        <div class="shape-demo">
+                            <div class="demo-diamond shape shape-rel"></div>
+                        </div>
+                        <h3>Relacionamento</h3>
+                        <p>Losango — uma associação entre duas ou mais entidades.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section id="entidade">
+                <h2><span class="num">§</span>Entidade</h2>
+                <p>É a <strong>representação abstrata de um objeto do mundo real</strong> sobre o qual se deseja manter
+                    informações. Pode ter existência física (um funcionário) ou conceitual (um pedido). Cada ocorrência
+                    específica de uma entidade é chamada de <strong>instância</strong>.</p>
+                <div class="chip-groups">
+                    <div>
+                        <span class="chip-group-label">Sistema Bancário</span>
+                        <div class="chip-row">
+                            <span class="ent-chip shape shape-entity">Cliente</span>
+                            <span class="ent-chip shape shape-entity">Conta</span>
+                            <span class="ent-chip shape shape-entity">Agência</span>
+                            <span class="ent-chip shape shape-entity">Banco</span>
+                        </div>
+                    </div>
+                    <div>
+                        <span class="chip-group-label">Sistema de Ambiente Empresarial</span>
+                        <div class="chip-row">
+                            <span class="ent-chip shape shape-entity">Produto</span>
+                            <span class="ent-chip shape shape-entity">Empregado</span>
+                            <span class="ent-chip shape shape-entity">Departamento</span>
+                            <span class="ent-chip shape shape-entity">Fornecedor</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="atributos">
+                <h2><span class="num">§</span>Atributos</h2>
+                <p>Atributos são as propriedades que caracterizam uma entidade. Por exemplo, a entidade
+                    <strong>Pedido</strong> precisa armazenar data, número, cliente, quantidade e valor unitário — cada
+                    um desses dados é um atributo, e eles se classificam assim:</p>
+                <div class="table-wrap">
+                    <table class="attr-table">
+                        <thead>
+                            <tr>
+                                <th>Tipo</th>
+                                <th>Definição</th>
+                                <th>Exemplo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Simples</td>
+                                <td>Não pode ser subdividido</td>
+                                <td><code>quantidade</code></td>
+                            </tr>
+                            <tr>
+                                <td>Composto</td>
+                                <td>Divide-se em subpartes com significado próprio</td>
+                                <td><code>endereço_cliente</code> → rua, número, bairro...</td>
+                            </tr>
+                            <tr>
+                                <td>Monovalorado</td>
+                                <td>Possui apenas um valor por instância</td>
+                                <td><code>dta_pedido</code></td>
+                            </tr>
+                            <tr>
+                                <td>Multivalorado</td>
+                                <td>Pode ter mais de um valor por instância</td>
+                                <td><code>telefone</code> (celular, residencial...)</td>
+                            </tr>
+                            <tr>
+                                <td>Derivado</td>
+                                <td>Calculado a partir de outro(s) atributo(s)</td>
+                                <td><code>total</code> = preço × quantidade</td>
+                            </tr>
+                            <tr>
+                                <td>Chave</td>
+                                <td>Valor distinto para cada instância</td>
+                                <td><code>nro_pedido</code></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <p style="margin-top:26px;">Reunindo todos os tipos numa única entidade, o exemplo do material fica
+                    assim:</p>
+                <div class="entity-diagram">
+                    <div class="ent-box shape shape-entity">Pedido</div>
+                    <div>
+                        <span class="attr-chip pk shape shape-attr">nro_pedido</span>
+                        <span class="attr-chip shape shape-attr">dta_pedido</span>
+                        <span class="attr-chip shape shape-attr">nome_cliente</span>
+                        <span class="attr-chip shape shape-attr">quantidade</span>
+                        <span class="attr-chip shape shape-attr">vlr_unitário</span>
+                        <span class="attr-chip shape shape-attr">material</span>
+                        <span class="attr-chip multivalued shape shape-attr">telefone (1,n)</span>
+                        <span class="attr-chip derived shape shape-attr">total</span>
+                        <span class="composite-box shape shape-attr">
+                            <span class="composite-title">endereço_cliente</span>
+                            <span class="composite-sub">
+                                <span>rua</span><span>número</span><span>bairro</span><span>cidade</span><span>estado</span><span>cep</span>
+                            </span>
+                        </span>
+                    </div>
+                    <div class="diagram-legend-mini">
+                        <span><span class="lm-box"
+                                style="background:var(--pk-soft);border:2px solid var(--pk);"></span>chave
+                            primária</span>
+                        <span><span class="lm-box"
+                                style="background:var(--attr-soft);border:2px dashed var(--attr);"></span>derivado</span>
+                        <span><span class="lm-box"
+                                style="background:var(--attr-soft);border:2px solid var(--attr);box-shadow:0 0 0 2px var(--attr-soft);"></span>multivalorado</span>
+                        <span><span class="lm-box"
+                                style="background:var(--attr-soft);border:2px solid var(--attr);"></span>composto
+                            (agrupa subatributos)</span>
+                    </div>
+                </div>
+
+                <p style="margin-top:22px;"><strong>Valor nulo ou opcional:</strong> um atributo tem valor nulo quando a
+                    entidade não possui um valor para ele — por exemplo, nem todo cliente tem e-mail cadastrado.
+                    Identificamos um valor nulo pela sua cardinalidade no diagrama.</p>
+            </section>
+
+            <section id="chave">
+                <h2><span class="num">§</span>Chave primária (Primary Key)</h2>
+                <p>Um conjunto de atributos capaz de identificar <strong>univocamente</strong> uma instância de uma
+                    entidade é chamado de <strong>identificador</strong> — também conhecido como <strong>chave
+                        primária</strong>. No diagrama, ela aparece com o nome sublinhado ou com uma bolinha preenchida.
+                </p>
+                <div class="pk-diagram">
+                    <div class="ent-box shape shape-entity" style="margin-bottom:18px;">Funcionário</div>
+                    <div class="pk-row">
+                        <span class="attr-chip pk shape shape-attr">matrícula</span>
+                        <span class="pk-arrow">← chave primária</span>
+                    </div>
+                    <div style="margin-top:12px;">
+                        <span class="attr-chip shape shape-attr">nome</span>
+                        <span class="attr-chip shape shape-attr">cargo</span>
+                        <span class="attr-chip shape shape-attr">registro</span>
+                        <span class="attr-chip shape shape-attr">dta_nasc</span>
+                        <span class="attr-chip shape shape-attr">sexo</span>
+                    </div>
+                </div>
+            </section>
+
+            <section id="relacionamento">
+                <h2><span class="num">§</span>Relacionamento</h2>
+                <p>É uma <strong>associação entre entidades</strong>, representada por um losango ligado às entidades
+                    por linhas. O material traz vários exemplos do dia a dia:</p>
+                <div class="rel-examples">
+                    <div class="rel-row">
+                        <div class="ent-box shape shape-entity">Médico</div>
+                        <div class="rel-line"></div>
+                        <div class="diamond-wrap shape shape-rel">
+                            <div class="diamond-bg"></div><span class="diamond-label">Consulta</span>
+                        </div>
+                        <div class="rel-line"></div>
+                        <div class="ent-box shape shape-entity">Paciente</div>
+                    </div>
+                    <div class="rel-row">
+                        <div class="ent-box shape shape-entity">Proprietário</div>
+                        <div class="rel-line"></div>
+                        <div class="diamond-wrap shape shape-rel">
+                            <div class="diamond-bg"></div><span class="diamond-label">Contacta</span>
+                        </div>
+                        <div class="rel-line"></div>
+                        <div class="ent-box shape shape-entity">Corretor</div>
+                    </div>
+                    <div class="rel-row">
+                        <div class="ent-box shape shape-entity">Produto</div>
+                        <div class="rel-line"></div>
+                        <div class="diamond-wrap shape shape-rel">
+                            <div class="diamond-bg"></div><span class="diamond-label">Contém</span>
+                        </div>
+                        <div class="rel-line"></div>
+                        <div class="ent-box shape shape-entity">Venda</div>
+                    </div>
+                </div>
+
+                <p style="margin-top:26px;">A notação <strong>(mínimo, máximo)</strong> ao lado de cada entidade indica
+                    a <strong>cardinalidade</strong> — quantas instâncias de uma entidade podem se relacionar com
+                    instâncias da outra:</p>
+                <div class="rel-examples">
+                    <div class="rel-row">
+                        <div class="ent-box shape shape-entity">Pedido</div>
+                        <div class="rel-line"><span class="card-label">(1,n)</span></div>
+                        <div class="diamond-wrap shape shape-rel">
+                            <div class="diamond-bg"></div><span class="diamond-label">Recebe</span>
+                        </div>
+                        <div class="rel-line"><span class="card-label">(0,1)</span></div>
+                        <div class="ent-box shape shape-entity">Pagamento</div>
+                    </div>
+                </div>
+            </section>
+
+            <hr class="divider">
+
+            <section id="exemplo">
+                <h2><span class="num">§</span>Exemplo completo — Alunos e Cursos</h2>
+                <p>Juntando entidade, atributos, relacionamento e cardinalidade num único diagrama — a mesma estrutura
+                    da abertura da aula:</p>
+                <div class="full-example">
+                    <div class="rel-row">
+                        <div class="ent-col">
+                            <div class="ent-box shape shape-entity">Alunos</div>
+                            <div class="side-attrs">
+                                <span class="attr-chip pk shape shape-attr">Matrícula</span>
+                                <span class="attr-chip shape shape-attr">Nome</span>
+                            </div>
+                        </div>
+                        <div class="rel-line"><span class="card-label">(0,N)</span></div>
+                        <div class="ent-col">
+                            <div class="diamond-wrap shape shape-rel">
+                                <div class="diamond-bg"></div><span class="diamond-label">Lotação</span>
+                            </div>
+                            <div class="side-attrs"><span class="attr-chip shape shape-attr">AnoIngresso</span></div>
+                        </div>
+                        <div class="rel-line"><span class="card-label">(1,1)</span></div>
+                        <div class="ent-col">
+                            <div class="ent-box shape shape-entity">Cursos</div>
+                            <div class="side-attrs">
+                                <span class="attr-chip pk shape shape-attr">Código</span>
+                                <span class="attr-chip shape shape-attr">Nome</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <p style="margin-top:16px;">Leitura da cardinalidade: cada <strong>aluno</strong> está matriculado em
+                    <strong>1 e apenas 1</strong> curso (1,1 do lado de Cursos), enquanto cada <strong>curso</strong>
+                    pode ter <strong>de 0 a N</strong> alunos lotados nele (0,N do lado de Alunos).</p>
+            </section>
+
+            <section id="exercicios">
+                <h2><span class="num">§</span>Exercícios propostos</h2>
+                <div class="exercise-list">
+                    <div class="exercise-card">
+                        <span class="ex-num">Exercício 1</span>
+                        <p>Considerando um sistema acadêmico, defina no mínimo 3 atributos para cada entidade abaixo e
+                            indique suas chaves primárias.</p>
+                        <div class="ent-hints">
+                            <span>Aluno</span><span>Turma</span><span>Professor</span><span>Disciplina</span>
+                        </div>
+                    </div>
+                    <div class="exercise-card">
+                        <span class="ex-num">Exercício 2</span>
+                        <p>Defina o que é entidade e dê pelo menos três exemplos de entidades diferentes das
+                            apresentadas em aula.</p>
+                    </div>
+                    <div class="exercise-card">
+                        <span class="ex-num">Exercício 3</span>
+                        <p>Sabendo que um <strong>carro pertence</strong> a uma <strong>marca</strong>, e esta marca
+                            <strong>possui</strong> um determinado <strong>modelo</strong>, monte o Diagrama
+                            Entidade-Relacionamento com atributos para cada entidade e marque as chaves primárias.</p>
+                        <div class="ent-hints">
+                            <span>Carro</span><span>Marca</span><span>Modelo</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="glossario">
+                <h2><span class="num">§</span>Glossário rápido</h2>
+                <dl class="glossary-grid">
+                    <div class="gloss-item">
+                        <dt>Entidade</dt>
+                        <dd>Objeto do mundo real sobre o qual se quer manter dados. Representada por retângulo.</dd>
+                    </div>
+                    <div class="gloss-item">
+                        <dt>Atributo</dt>
+                        <dd>Propriedade que caracteriza uma entidade. Representado por oval.</dd>
+                    </div>
+                    <div class="gloss-item">
+                        <dt>Relacionamento</dt>
+                        <dd>Associação entre entidades. Representado por losango.</dd>
+                    </div>
+                    <div class="gloss-item">
+                        <dt>Instância</dt>
+                        <dd>Ocorrência específica de um tipo de entidade.</dd>
+                    </div>
+                    <div class="gloss-item">
+                        <dt>Chave primária</dt>
+                        <dd>Atributo(s) que identifica(m) univocamente uma instância da entidade.</dd>
+                    </div>
+                    <div class="gloss-item">
+                        <dt>Cardinalidade</dt>
+                        <dd>Indica quantas instâncias se relacionam, no formato (mínimo, máximo).</dd>
+                    </div>
+                    <div class="gloss-item">
+                        <dt>Atributo derivado</dt>
+                        <dd>Calculado a partir de outros atributos já existentes.</dd>
+                    </div>
+                    <div class="gloss-item">
+                        <dt>Valor nulo</dt>
+                        <dd>Ausência de valor de um atributo para uma instância específica.</dd>
+                    </div>
+                </dl>
+            </section>
+
+            <footer>
+                Resumo elaborado a partir do material "Modelos de Banco de Dados" e "Modelo Entidade e Relacionamento
+                (MER) — Parte I", Prof. Me Cristiane Fidelix.
+            </footer>
+        </main>
+    </div>
+
+    <script>
+        // Mobile sidebar toggle
+        const menuBtn = document.getElementById('menuBtn');
+        const sideNav = document.getElementById('sideNav');
+        menuBtn.addEventListener('click', () => {
+            const open = sideNav.classList.toggle('open');
+            menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+        });
+        document.querySelectorAll('.toc a').forEach(a => {
+            a.addEventListener('click', () => {
+                sideNav.classList.remove('open');
+                menuBtn.setAttribute('aria-expanded', 'false');
+            });
+        });
+
+        // Active section highlight in sidebar
+        const sections = document.querySelectorAll('main section, main .hero');
+        const links = document.querySelectorAll('.toc a');
+        const byId = {};
+        links.forEach(l => byId[l.getAttribute('href').slice(1)] = l);
+
+        try {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    const link = byId[entry.target.id];
+                    if (!link) return;
+                    if (entry.isIntersecting) {
+                        links.forEach(l => l.classList.remove('active'));
+                        link.classList.add('active');
+                    }
+                });
+            }, { rootMargin: '-20% 0px -70% 0px' });
+            sections.forEach(s => { if (s.id) observer.observe(s); });
+        } catch (e) { }
+
+        // Legend hover highlight
+        function setHL(kind) {
+            if (kind) document.body.setAttribute('data-hl', kind);
+            else document.body.removeAttribute('data-hl');
+        }
+        document.querySelectorAll('.legend-chip').forEach(chip => {
+            chip.addEventListener('mouseenter', () => setHL(chip.dataset.kind));
+            chip.addEventListener('mouseleave', () => setHL(null));
+        });
+    </script>
+
+</body>
+
+</html>
