@@ -51,7 +51,7 @@ Análise de requisitos
     │
     ├── Requisitos funcionais ──► Análise funcional ──► Projeto de programas de aplicação
     │                                                              │
-    └── Requisitos de dados ──► Projeto Conceitual                │
+    └── Requisitos de dados ──► Projeto Conceitual                 │
                                      │ (Esquema conceitual - MER)  │
                                      ▼                             │
                                 Projeto Lógico                     │
