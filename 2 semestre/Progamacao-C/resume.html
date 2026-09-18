@@ -4,69 +4,75 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Índice Zero — Domine laços e vetores em C</title>
+    <title>Comandos de Repetição & Vetores em C</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
-        href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Source+Sans+3:wght@400;500;600;700&display=swap"
+        href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap"
         rel="stylesheet">
     <style>
         :root {
-            --ink: #16233b;
-            --ink-soft: #3c4a63;
-            --paper: #eef1f6;
+            --ink: #1c2333;
+            --ink-soft: #5b6478;
+            --paper: #f4f6f4;
             --paper-raised: #ffffff;
-            --grid-line: #d6dde6;
-            --accent: #e0472c;
-            --accent-dark: #b8371f;
-            --accent-soft: rgba(224, 71, 44, 0.10);
-            --ok: #1f7a4d;
-            --ok-soft: rgba(31, 122, 77, 0.12);
-            --border: #cfd7e2;
-            --shadow-sm: 0 1px 2px rgba(22, 35, 59, 0.08);
-            --shadow-md: 0 6px 20px rgba(22, 35, 59, 0.10);
-            --shadow-lg: 0 18px 48px rgba(22, 35, 59, 0.16);
-            --radius-sm: 6px;
+            --line: #dde3df;
+            --kw: #3f6ea5;
+            --kw-soft: rgba(63, 110, 165, 0.09);
+            --idx: #a9791f;
+            --idx-soft: rgba(169, 121, 31, 0.10);
+            --ok: #5b8c3a;
+            --ok-soft: rgba(91, 140, 58, 0.10);
+            --warn: #a63b3b;
+            --warn-soft: rgba(166, 59, 59, 0.09);
+            --shadow-sm: 0 1px 3px rgba(28, 35, 51, 0.07);
+            --shadow-md: 0 6px 20px rgba(28, 35, 51, 0.09);
+            --shadow-lg: 0 18px 44px rgba(28, 35, 51, 0.14);
+            --radius-sm: 5px;
             --radius-md: 10px;
-            --radius-lg: 18px;
-            --font-mono: 'Space Mono', 'Courier New', monospace;
-            --font-body: 'Source Sans 3', -apple-system, sans-serif;
+            --radius-lg: 16px;
+            --font-display: 'Space Mono', 'Courier New', monospace;
+            --font-body: 'IBM Plex Sans', -apple-system, sans-serif;
         }
 
         :root:not([data-theme="light"]) {
             @media (prefers-color-scheme: dark) {
-                --ink: #eef1f6;
-                --ink-soft: #aab6c8;
-                --paper: #12192a;
-                --paper-raised: #1a2338;
-                --grid-line: #25314a;
-                --accent: #ff6a49;
-                --accent-dark: #ff8264;
-                --accent-soft: rgba(255, 106, 73, 0.14);
-                --ok: #4ad395;
-                --ok-soft: rgba(74, 211, 149, 0.14);
-                --border: #2c3a56;
-                --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-                --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.35);
-                --shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.5);
+                --ink: #eef1ee;
+                --ink-soft: #aab4ab;
+                --paper: #141a16;
+                --paper-raised: #1c2420;
+                --line: #2b352f;
+                --kw: #7fa8d6;
+                --kw-soft: rgba(127, 168, 214, 0.14);
+                --idx: #d9ad5c;
+                --idx-soft: rgba(217, 173, 92, 0.14);
+                --ok: #8fbf6c;
+                --ok-soft: rgba(143, 191, 108, 0.14);
+                --warn: #e08080;
+                --warn-soft: rgba(224, 128, 128, 0.14);
+                --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
+                --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.4);
+                --shadow-lg: 0 18px 44px rgba(0, 0, 0, 0.55);
             }
         }
 
         :root[data-theme="dark"] {
-            --ink: #eef1f6;
-            --ink-soft: #aab6c8;
-            --paper: #12192a;
-            --paper-raised: #1a2338;
-            --grid-line: #25314a;
-            --accent: #ff6a49;
-            --accent-dark: #ff8264;
-            --accent-soft: rgba(255, 106, 73, 0.14);
-            --ok: #4ad395;
-            --ok-soft: rgba(74, 211, 149, 0.14);
-            --border: #2c3a56;
-            --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
-            --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.35);
-            --shadow-lg: 0 18px 48px rgba(0, 0, 0, 0.5);
+            --ink: #eef1ee;
+            --ink-soft: #aab4ab;
+            --paper: #141a16;
+            --paper-raised: #1c2420;
+            --line: #2b352f;
+            --kw: #7fa8d6;
+            --kw-soft: rgba(127, 168, 214, 0.14);
+            --idx: #d9ad5c;
+            --idx-soft: rgba(217, 173, 92, 0.14);
+            --ok: #8fbf6c;
+            --ok-soft: rgba(143, 191, 108, 0.14);
+            --warn: #e08080;
+            --warn-soft: rgba(224, 128, 128, 0.14);
+            --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.35);
+            --shadow-md: 0 6px 20px rgba(0, 0, 0, 0.4);
+            --shadow-lg: 0 18px 44px rgba(0, 0, 0, 0.55);
         }
 
         * {
@@ -80,42 +86,22 @@
         body {
             margin: 0;
             background: var(--paper);
-            background-image:
-                linear-gradient(var(--grid-line) 1px, transparent 1px),
-                linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
-            background-size: 32px 32px;
             color: var(--ink);
             font-family: var(--font-body);
-            line-height: 1.6;
-            overflow-x: hidden;
+            line-height: 1.65;
+            background-image: radial-gradient(var(--line) 1px, transparent 1px);
+            background-size: 22px 22px;
             -webkit-font-smoothing: antialiased;
-        }
-
-        img {
-            max-width: 100%;
-            display: block;
-        }
-
-        a {
-            color: inherit;
-        }
-
-        .wrap {
-            max-width: 1180px;
-            margin: 0 auto;
-            padding: 0 24px;
-        }
-
-        section {
-            padding: 88px 0;
+            overflow-x: hidden;
         }
 
         h1,
         h2,
         h3 {
-            font-family: var(--font-mono);
-            line-height: 1.15;
+            font-family: var(--font-display);
+            line-height: 1.25;
             margin: 0;
+            font-weight: 700;
             letter-spacing: -0.01em;
         }
 
@@ -123,309 +109,347 @@
             margin: 0;
         }
 
-        button {
-            font-family: inherit;
-            cursor: pointer;
+        a {
+            color: inherit;
+        }
+
+        code {
+            font-family: var(--font-display);
+            background: var(--kw-soft);
+            color: var(--kw);
+            padding: 1px 6px;
+            border-radius: 4px;
+            font-size: 0.88em;
         }
 
         :focus-visible {
-            outline: 2.5px solid var(--accent);
+            outline: 2.5px solid var(--kw);
             outline-offset: 3px;
             border-radius: 4px;
         }
 
-        /* ---------- Buttons ---------- */
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            padding: 13px 26px;
-            border-radius: var(--radius-sm);
-            font-weight: 700;
-            font-size: 0.95rem;
-            font-family: var(--font-body);
-            border: 1.5px solid transparent;
-            min-height: 46px;
-            transition: transform 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
-            text-decoration: none;
-        }
-
-        .btn-primary {
-            background: var(--accent);
-            color: #fff;
-            box-shadow: var(--shadow-sm);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 26px rgba(224, 71, 44, 0.35);
-            background: var(--accent-dark);
-        }
-
-        .btn-ghost {
-            background: transparent;
-            color: var(--ink);
-            border-color: var(--border);
-        }
-
-        .btn-ghost:hover {
-            border-color: var(--ink);
-            transform: translateY(-2px);
-        }
-
-        .btn-block {
-            width: 100%;
-        }
-
-        /* ---------- Navbar ---------- */
-        header.nav {
-            position: sticky;
-            top: 0;
-            z-index: 50;
-            background: color-mix(in srgb, var(--paper) 88%, transparent);
-            backdrop-filter: blur(10px);
-            border-bottom: 1px solid var(--grid-line);
-        }
-
-        .nav-inner {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding: 16px 24px;
-            max-width: 1180px;
+        /* ---------- Layout shell ---------- */
+        .shell {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            max-width: 1280px;
             margin: 0 auto;
         }
 
-        .logo {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-family: var(--font-mono);
-            font-weight: 700;
-            font-size: 1.15rem;
-            text-decoration: none;
-            color: var(--ink);
+        @media (max-width:940px) {
+            .shell {
+                grid-template-columns: 1fr;
+            }
         }
 
-        .logo .brackets {
-            color: var(--accent);
-        }
-
-        .nav-links {
-            display: flex;
-            gap: 32px;
-            list-style: none;
-            margin: 0;
-            padding: 0;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            font-weight: 600;
-            font-size: 0.94rem;
-            color: var(--ink-soft);
-            transition: color 0.15s ease;
-        }
-
-        .nav-links a:hover {
-            color: var(--accent);
-        }
-
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 18px;
-        }
-
-        .burger {
+        .topbar {
             display: none;
-            background: none;
-            border: none;
-            padding: 8px;
-            width: 44px;
-            height: 44px;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .burger span,
-        .burger::before,
-        .burger::after {
-            display: none;
-        }
-
-        .burger-icon {
-            width: 22px;
-            height: 16px;
-            position: relative;
-        }
-
-        .burger-icon span {
-            position: absolute;
-            left: 0;
-            width: 100%;
-            height: 2px;
-            background: var(--ink);
-            border-radius: 2px;
-            transition: all 0.25s ease;
-        }
-
-        .burger-icon span:nth-child(1) {
+            position: sticky;
             top: 0;
+            z-index: 60;
+            background: color-mix(in srgb, var(--paper) 90%, transparent);
+            backdrop-filter: blur(8px);
+            border-bottom: 1px solid var(--line);
+            padding: 14px 20px;
+            align-items: center;
+            justify-content: space-between;
         }
 
-        .burger-icon span:nth-child(2) {
-            top: 7px;
-        }
-
-        .burger-icon span:nth-child(3) {
-            top: 14px;
-        }
-
-        .nav.open .burger-icon span:nth-child(1) {
-            transform: translateY(7px) rotate(45deg);
-        }
-
-        .nav.open .burger-icon span:nth-child(2) {
-            opacity: 0;
-        }
-
-        .nav.open .burger-icon span:nth-child(3) {
-            transform: translateY(-7px) rotate(-45deg);
-        }
-
-        @media (max-width:860px) {
-            .nav-links {
-                position: fixed;
-                top: 65px;
-                left: 0;
-                right: 0;
-                background: var(--paper-raised);
-                flex-direction: column;
-                gap: 0;
-                border-bottom: 1px solid var(--grid-line);
-                max-height: 0;
-                overflow: hidden;
-                transition: max-height 0.3s ease;
-            }
-
-            header.nav.open .nav-links {
-                max-height: 400px;
-            }
-
-            .nav-links a {
-                display: block;
-                padding: 16px 24px;
-                width: 100%;
-                border-top: 1px solid var(--grid-line);
-            }
-
-            .nav-right .btn-ghost {
-                display: none;
-            }
-
-            .burger {
+        @media (max-width:940px) {
+            .topbar {
                 display: flex;
             }
         }
 
-        /* ---------- Hero ---------- */
-        .hero {
-            padding: 80px 0 60px;
-        }
-
-        .hero-grid {
-            display: grid;
-            grid-template-columns: 1.05fr 0.95fr;
-            gap: 56px;
-            align-items: center;
-        }
-
-        @media (max-width:960px) {
-            .hero-grid {
-                grid-template-columns: 1fr;
-                gap: 40px;
-            }
-        }
-
-        .eyebrow-mark {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            font-family: var(--font-mono);
-            font-size: 0.82rem;
-            color: var(--ok);
-            background: var(--ok-soft);
-            border: 1px solid var(--ok);
-            padding: 6px 12px;
-            border-radius: var(--radius-full, 999px);
-            margin-bottom: 22px;
-        }
-
-        h1.headline {
-            font-size: clamp(2.2rem, 4.6vw, 3.6rem);
+        .topbar-title {
+            font-family: var(--font-display);
             font-weight: 700;
+            font-size: 0.98rem;
         }
 
-        .headline .accent-word {
-            color: var(--accent);
-        }
-
-        .sub {
-            margin-top: 20px;
-            font-size: 1.15rem;
-            color: var(--ink-soft);
-            max-width: 46ch;
-        }
-
-        .hero-ctas {
-            display: flex;
-            gap: 14px;
-            margin-top: 32px;
-            flex-wrap: wrap;
-        }
-
-        .trust-line {
-            margin-top: 26px;
-            font-size: 0.9rem;
-            color: var(--ink-soft);
+        .menu-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            border: 1px solid var(--line);
+            background: var(--paper-raised);
             display: flex;
             align-items: center;
-            gap: 10px;
+            justify-content: center;
         }
 
-        .trust-line svg {
-            flex: none;
-            color: var(--ok);
+        aside.sidenav {
+            position: sticky;
+            top: 0;
+            align-self: start;
+            height: 100vh;
+            overflow-y: auto;
+            padding: 36px 20px 40px 32px;
+            border-right: 1px solid var(--line);
         }
 
-        .hero-visual {
-            opacity: 0;
-            transform: translateY(18px);
-            animation: heroIn 0.7s ease 0.15s forwards;
-        }
+        @media (max-width:940px) {
+            aside.sidenav {
+                position: fixed;
+                top: 65px;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                height: auto;
+                background: var(--paper);
+                z-index: 55;
+                padding: 20px 24px;
+                transform: translateY(-110%);
+                transition: transform 0.25s ease;
+            }
 
-        @keyframes heroIn {
-            to {
-                opacity: 1;
+            aside.sidenav.open {
                 transform: translateY(0);
             }
         }
 
-        @media (prefers-reduced-motion: reduce) {
-            .hero-visual {
-                animation: none;
-                opacity: 1;
-                transform: none;
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+
+        .brand .shape-brace {
+            font-family: var(--font-display);
+            font-weight: 700;
+            color: var(--kw);
+            font-size: 1.1rem;
+        }
+
+        .brand span.label {
+            font-family: var(--font-display);
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        nav.toc {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        nav.toc a {
+            display: block;
+            padding: 8px 10px;
+            border-radius: 7px;
+            font-size: 0.9rem;
+            color: var(--ink-soft);
+            text-decoration: none;
+            border-left: 2px solid transparent;
+            transition: background 0.15s ease, color 0.15s ease;
+        }
+
+        nav.toc a:hover {
+            background: var(--kw-soft);
+            color: var(--kw);
+        }
+
+        nav.toc a.active {
+            color: var(--kw);
+            border-left-color: var(--kw);
+            background: var(--kw-soft);
+            font-weight: 600;
+        }
+
+        .toc-group-label {
+            font-size: 0.72rem;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--ink-soft);
+            opacity: 0.65;
+            margin: 18px 0 6px 10px;
+        }
+
+        .toc-group-label:first-of-type {
+            margin-top: 0;
+        }
+
+        /* ---------- Legend chip (interactive) ---------- */
+        .legend {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 22px;
+        }
+
+        .legend-chip {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+            padding: 7px 12px;
+            border-radius: 999px;
+            font-size: 0.82rem;
+            font-weight: 600;
+            cursor: default;
+            border: 1px solid var(--line);
+            background: var(--paper-raised);
+            transition: transform 0.15s ease;
+            font-family: var(--font-display);
+        }
+
+        .legend-chip:hover {
+            transform: translateY(-1px);
+        }
+
+        .legend-chip[data-kind="loop"] {
+            color: var(--kw);
+        }
+
+        .legend-chip[data-kind="loop"] .lg-dot {
+            background: var(--kw);
+        }
+
+        .legend-chip[data-kind="idx"] {
+            color: var(--idx);
+        }
+
+        .legend-chip[data-kind="idx"] .lg-dot {
+            background: var(--idx);
+        }
+
+        .legend-chip[data-kind="ok"] {
+            color: var(--ok);
+        }
+
+        .legend-chip[data-kind="ok"] .lg-dot {
+            background: var(--ok);
+        }
+
+        .lg-dot {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            flex: none;
+        }
+
+        body[data-hl="loop"] .tok:not(.tok-loop) {
+            opacity: 0.3;
+        }
+
+        body[data-hl="idx"] .tok:not(.tok-idx) {
+            opacity: 0.3;
+        }
+
+        body[data-hl="ok"] .tok:not(.tok-ok) {
+            opacity: 0.3;
+        }
+
+        .tok {
+            transition: opacity 0.2s ease;
+        }
+
+        main {
+            padding: 0 0 100px;
+            min-width: 0;
+        }
+
+        .hero {
+            padding: 56px 44px 40px;
+            max-width: 800px;
+        }
+
+        @media (max-width:640px) {
+            .hero {
+                padding: 32px 22px 28px;
             }
         }
 
+        .hero h1 {
+            font-size: clamp(1.85rem, 4vw, 2.55rem);
+        }
+
+        .hero .subtitle {
+            margin-top: 6px;
+            color: var(--ink-soft);
+            font-size: 1rem;
+            font-family: var(--font-body);
+        }
+
+        .hero p.lead {
+            margin-top: 20px;
+            font-size: 1.1rem;
+            color: var(--ink-soft);
+            max-width: 62ch;
+            font-family: var(--font-body);
+        }
+
+        section {
+            padding: 14px 44px 54px;
+            max-width: 800px;
+        }
+
+        @media (max-width:640px) {
+            section {
+                padding: 10px 22px 44px;
+            }
+        }
+
+        section h2 {
+            font-size: 1.5rem;
+            margin-bottom: 16px;
+            scroll-margin-top: 24px;
+        }
+
+        section h2 .num {
+            color: var(--ink-soft);
+            font-weight: 400;
+            margin-right: 10px;
+            font-size: 0.85em;
+        }
+
+        section>p {
+            color: var(--ink-soft);
+            margin-bottom: 14px;
+            max-width: 68ch;
+        }
+
+        section>p:last-of-type {
+            margin-bottom: 0;
+        }
+
+        section ul {
+            padding-left: 20px;
+            color: var(--ink-soft);
+        }
+
+        section li {
+            margin-bottom: 8px;
+        }
+
+        section li::marker {
+            color: var(--kw);
+        }
+
+        strong {
+            color: var(--ink);
+        }
+
+        hr.divider {
+            border: none;
+            border-top: 1px solid var(--line);
+            max-width: 800px;
+            margin: 0 44px;
+        }
+
+        @media (max-width:640px) {
+            hr.divider {
+                margin: 0 22px;
+            }
+        }
+
+        /* ---------- Code card ---------- */
         .code-card {
+            margin-top: 20px;
             background: var(--paper-raised);
-            border: 1px solid var(--border);
+            border: 1px solid var(--line);
             border-radius: var(--radius-lg);
-            box-shadow: var(--shadow-lg);
+            box-shadow: var(--shadow-sm);
             overflow: hidden;
         }
 
@@ -433,1107 +457,866 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 14px 18px;
-            border-bottom: 1px solid var(--grid-line);
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--line);
         }
 
         .dot {
-            width: 10px;
-            height: 10px;
+            width: 9px;
+            height: 9px;
             border-radius: 50%;
-            background: var(--border);
         }
 
-        .code-card-top span.filename {
-            margin-left: 8px;
-            font-family: var(--font-mono);
-            font-size: 0.8rem;
+        .code-card-top .filename {
+            margin-left: 6px;
+            font-family: var(--font-display);
+            font-size: 0.76rem;
             color: var(--ink-soft);
         }
 
         .code-card pre {
             margin: 0;
-            padding: 22px;
-            font-family: var(--font-mono);
-            font-size: 0.86rem;
+            padding: 20px;
+            font-family: var(--font-display);
+            font-size: 0.84rem;
             overflow-x: auto;
-            color: var(--ink);
             line-height: 1.75;
         }
 
-        .code-card pre .kw {
-            color: var(--accent);
-        }
-
-        .code-card pre .cm {
-            color: var(--ink-soft);
-        }
-
         .code-out {
-            margin: 0 22px 22px;
-            padding: 14px 16px;
+            margin: 0 20px 20px;
+            padding: 12px 15px;
             border-radius: var(--radius-sm);
-            background: var(--accent-soft);
-            border: 1px dashed var(--accent);
-            font-family: var(--font-mono);
-            font-size: 0.85rem;
-            display: flex;
-            align-items: center;
-            gap: 10px;
+            background: var(--ok-soft);
+            border: 1px dashed var(--ok);
+            color: var(--ink);
+            font-family: var(--font-display);
+            font-size: 0.8rem;
         }
 
-        .code-out svg {
-            flex: none;
-            color: var(--accent);
-        }
-
-        /* ---------- Section heads ---------- */
-        .section-head {
-            max-width: 640px;
-            margin-bottom: 48px;
-        }
-
-        .section-head .kicker {
-            font-family: var(--font-mono);
-            font-size: 0.85rem;
-            color: var(--accent);
-            display: block;
-            margin-bottom: 12px;
-        }
-
-        .section-head h2 {
-            font-size: clamp(1.7rem, 3vw, 2.3rem);
-        }
-
-        .section-head p {
-            margin-top: 14px;
-            color: var(--ink-soft);
-            font-size: 1.05rem;
-        }
-
-        /* ---------- Problem section ---------- */
-        .problem-list {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-        }
-
-        @media (max-width:860px) {
-            .problem-list {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .problem-card {
-            background: var(--paper-raised);
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
+        /* ---------- Loop anatomy diagram ---------- */
+        .loop-anatomy {
+            margin-top: 22px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-lg);
             padding: 26px;
+            background: var(--paper-raised);
         }
 
-        .problem-card .mark {
-            width: 40px;
-            height: 40px;
-            border-radius: 10px;
-            background: var(--accent-soft);
+        .loop-parts {
             display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            font-family: var(--font-display);
+            font-size: 0.92rem;
             align-items: center;
             justify-content: center;
-            color: var(--accent);
-            margin-bottom: 16px;
         }
 
-        .problem-card h3 {
-            font-size: 1.05rem;
-            font-weight: 700;
-            margin-bottom: 10px;
+        .loop-part {
+            padding: 9px 14px;
+            border-radius: var(--radius-sm);
+            border: 2px solid var(--line);
+            background: var(--paper);
         }
 
-        .problem-card p {
+        .loop-part.init {
+            border-color: var(--ok);
+            background: var(--ok-soft);
+            color: var(--ok);
+        }
+
+        .loop-part.cond {
+            border-color: var(--kw);
+            background: var(--kw-soft);
+            color: var(--kw);
+        }
+
+        .loop-part.incr {
+            border-color: var(--idx);
+            background: var(--idx-soft);
+            color: var(--idx);
+        }
+
+        .loop-labels {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 14px;
+            font-size: 0.78rem;
             color: var(--ink-soft);
-            font-size: 0.96rem;
         }
 
-        /* ---------- Features ---------- */
-        .features {
+        .loop-labels span {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .ll-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 3px;
+            flex: none;
+        }
+
+        /* ---------- Index bar visual ---------- */
+        .index-bar {
+            margin-top: 22px;
+            border: 1px solid var(--line);
+            border-radius: var(--radius-lg);
+            padding: 26px;
             background: var(--paper-raised);
-            border-top: 1px solid var(--grid-line);
-            border-bottom: 1px solid var(--grid-line);
         }
 
-        .feature-grid {
+        .cells {
+            display: flex;
+            gap: 4px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .cell {
+            width: 56px;
+            height: 56px;
+            border: 2px solid var(--idx);
+            border-radius: var(--radius-sm);
+            background: var(--idx-soft);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-display);
+        }
+
+        .cell .cell-idx {
+            font-size: 0.68rem;
+            color: var(--idx-soft);
+            color: var(--idx);
+            opacity: 0.8;
+        }
+
+        .cell .cell-val {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: var(--idx);
+        }
+
+        .cell.invalid {
+            border-style: dashed;
+            border-color: var(--warn);
+            background: var(--warn-soft);
+        }
+
+        .cell.invalid .cell-idx,
+        .cell.invalid .cell-val {
+            color: var(--warn);
+        }
+
+        .cells-caption {
+            text-align: center;
+            margin-top: 12px;
+            font-size: 0.82rem;
+            color: var(--ink-soft);
+        }
+
+        /* ---------- Feature/warning cards ---------- */
+        .warn-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 1px;
-            background: var(--grid-line);
-            border: 1px solid var(--grid-line);
-            border-radius: var(--radius-md);
-            overflow: hidden;
+            gap: 16px;
+            margin-top: 20px;
         }
 
-        @media (max-width:860px) {
-            .feature-grid {
+        @media (max-width:700px) {
+            .warn-grid {
                 grid-template-columns: 1fr;
             }
         }
 
-        .feature-item {
+        .warn-card {
+            border: 1px solid var(--line);
+            border-left: 3px solid var(--warn);
+            border-radius: var(--radius-md);
+            padding: 20px;
             background: var(--paper-raised);
-            padding: 30px;
-            opacity: 0;
-            transform: translateY(14px);
-            transition: opacity 0.5s ease, transform 0.5s ease;
         }
 
-        .feature-item.visible {
-            opacity: 1;
-            transform: translateY(0);
-        }
-
-        .feature-item .ico {
-            width: 44px;
-            height: 44px;
-            border-radius: 12px;
-            background: var(--accent-soft);
-            color: var(--accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 18px;
-        }
-
-        .feature-item h3 {
-            font-size: 1.05rem;
+        .warn-card h3 {
+            font-size: 0.98rem;
+            font-family: var(--font-body);
             font-weight: 700;
             margin-bottom: 8px;
         }
 
-        .feature-item p {
+        .warn-card p {
+            font-size: 0.88rem;
             color: var(--ink-soft);
-            font-size: 0.95rem;
+            font-family: var(--font-body);
         }
 
-        /* ---------- How it works ---------- */
-        .steps {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 32px;
-            counter-reset: step;
+        /* ---------- Declaration table ---------- */
+        .decl-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 0.9rem;
         }
 
-        @media (max-width:860px) {
-            .steps {
-                grid-template-columns: 1fr;
-            }
+        .decl-table th,
+        .decl-table td {
+            text-align: left;
+            padding: 11px 14px;
+            border-bottom: 1px solid var(--line);
         }
 
-        .step {
-            position: relative;
-            padding-top: 8px;
+        .decl-table th {
+            color: var(--ink-soft);
+            font-weight: 600;
+            font-size: 0.78rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            font-family: var(--font-body);
         }
 
-        .step .num {
-            font-family: var(--font-mono);
-            font-size: 0.85rem;
-            color: var(--accent);
-            display: block;
-            margin-bottom: 14px;
+        .table-wrap {
+            overflow-x: auto;
         }
 
-        .step h3 {
-            font-size: 1.15rem;
+        /* ---------- OK/NOK table ---------- */
+        .oknok-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 0.88rem;
+        }
+
+        .oknok-table th,
+        .oknok-table td {
+            text-align: left;
+            padding: 10px 12px;
+            border-bottom: 1px solid var(--line);
+            vertical-align: top;
+        }
+
+        .oknok-table th {
+            color: var(--ink-soft);
+            font-weight: 600;
+            font-size: 0.76rem;
+            text-transform: uppercase;
+            letter-spacing: 0.04em;
+            font-family: var(--font-body);
+        }
+
+        .tag-ok,
+        .tag-nok {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 999px;
+            font-family: var(--font-display);
+            font-size: 0.76rem;
             font-weight: 700;
-            margin-bottom: 10px;
         }
 
-        .step p {
-            color: var(--ink-soft);
-            font-size: 0.96rem;
+        .tag-ok {
+            background: var(--ok-soft);
+            color: var(--ok);
         }
 
-        /* ---------- Testimonials ---------- */
-        .testimonials {
-            background: var(--paper-raised);
-            border-top: 1px solid var(--grid-line);
-            border-bottom: 1px solid var(--grid-line);
+        .tag-nok {
+            background: var(--warn-soft);
+            color: var(--warn);
         }
 
-        .t-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
+        /* ---------- Trace table (execution trace) ---------- */
+        .trace-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            font-size: 0.88rem;
+            font-family: var(--font-display);
         }
 
-        @media (max-width:860px) {
-            .t-grid {
-                grid-template-columns: 1fr;
-            }
+        .trace-table th,
+        .trace-table td {
+            text-align: center;
+            padding: 9px 10px;
+            border-bottom: 1px solid var(--line);
+            border-right: 1px solid var(--line);
         }
 
-        .t-card {
-            border: 1px solid var(--border);
-            border-radius: var(--radius-md);
-            padding: 26px;
-            background: var(--paper);
+        .trace-table th:last-child,
+        .trace-table td:last-child {
+            border-right: none;
         }
 
-        .t-card p.quote {
-            font-size: 1rem;
-            color: var(--ink);
+        .trace-table th {
+            background: var(--kw-soft);
+            color: var(--kw);
+            font-weight: 700;
         }
 
-        .t-card .author {
+        .trace-table td.exit-row {
+            background: var(--warn-soft);
+            color: var(--warn);
+            font-weight: 700;
+        }
+
+        /* ---------- Exercise / quiz style cards ---------- */
+        .exercise-list {
             display: flex;
-            align-items: center;
-            gap: 12px;
+            flex-direction: column;
+            gap: 14px;
             margin-top: 20px;
         }
 
-        .avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--ink);
-            color: var(--paper);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-family: var(--font-mono);
+        .exercise-card {
+            border: 1px solid var(--line);
+            border-left: 3px solid var(--kw);
+            border-radius: var(--radius-md);
+            padding: 18px 20px;
+            background: var(--paper-raised);
+        }
+
+        .exercise-card .ex-num {
+            font-family: var(--font-display);
             font-weight: 700;
-            font-size: 0.85rem;
-            flex: none;
-        }
-
-        .author strong {
-            display: block;
-            font-size: 0.92rem;
-        }
-
-        .author span {
-            display: block;
+            color: var(--kw);
             font-size: 0.82rem;
-            color: var(--ink-soft);
+            margin-bottom: 8px;
+            display: block;
         }
 
-        /* ---------- Pricing ---------- */
-        .pricing-grid {
+        .exercise-card p {
+            color: var(--ink);
+            font-size: 0.94rem;
+            font-family: var(--font-body);
+        }
+
+        .exercise-card pre {
+            margin-top: 10px;
+            background: var(--paper);
+            border: 1px solid var(--line);
+            border-radius: var(--radius-sm);
+            padding: 12px 14px;
+            font-family: var(--font-display);
+            font-size: 0.8rem;
+            overflow-x: auto;
+        }
+
+        .exercise-answer {
+            margin-top: 10px;
+            font-size: 0.85rem;
+            color: var(--ok);
+            font-family: var(--font-display);
+        }
+
+        /* ---------- Glossary ---------- */
+        .glossary-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-            align-items: stretch;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 14px;
+            margin-top: 20px;
         }
 
-        @media (max-width:860px) {
-            .pricing-grid {
+        @media (max-width:640px) {
+            .glossary-grid {
                 grid-template-columns: 1fr;
             }
         }
 
-        .plan {
-            border: 1px solid var(--border);
-            border-radius: var(--radius-lg);
-            padding: 32px;
+        .gloss-item {
+            border: 1px solid var(--line);
+            border-radius: var(--radius-md);
+            padding: 16px 18px;
             background: var(--paper-raised);
-            display: flex;
-            flex-direction: column;
         }
 
-        .plan.featured {
-            border: 2px solid var(--accent);
-            box-shadow: var(--shadow-md);
-            position: relative;
-        }
-
-        .plan-badge {
-            position: absolute;
-            top: -13px;
-            left: 28px;
-            background: var(--accent);
-            color: #fff;
-            font-family: var(--font-mono);
-            font-size: 0.72rem;
-            padding: 4px 10px;
-            border-radius: 999px;
-        }
-
-        .plan h3 {
-            font-size: 1.1rem;
+        .gloss-item dt {
             font-weight: 700;
-        }
-
-        .plan .price {
-            font-family: var(--font-mono);
-            font-size: 2.1rem;
-            margin: 16px 0 4px;
-        }
-
-        .plan .price span {
-            font-size: 0.95rem;
-            color: var(--ink-soft);
-            font-family: var(--font-body);
-        }
-
-        .plan .plan-desc {
-            color: var(--ink-soft);
-            font-size: 0.9rem;
-            margin-bottom: 24px;
-        }
-
-        .plan ul {
-            list-style: none;
-            margin: 0 0 28px;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .plan li {
-            display: flex;
-            gap: 10px;
+            font-family: var(--font-display);
             font-size: 0.92rem;
-            align-items: flex-start;
+            margin-bottom: 4px;
+            color: var(--kw);
         }
 
-        .plan li svg {
-            flex: none;
-            color: var(--ok);
-            margin-top: 2px;
-        }
-
-        /* ---------- FAQ ---------- */
-        .faq {
-            max-width: 760px;
-            margin: 0 auto;
-        }
-
-        .faq-item {
-            border-bottom: 1px solid var(--grid-line);
-        }
-
-        .faq-q {
-            width: 100%;
-            text-align: left;
-            background: none;
-            border: none;
-            padding: 22px 4px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            gap: 16px;
-            font-family: var(--font-body);
-            font-weight: 600;
-            font-size: 1rem;
-            color: var(--ink);
-        }
-
-        .faq-q svg {
-            flex: none;
-            transition: transform 0.25s ease;
-            color: var(--accent);
-        }
-
-        .faq-item.open .faq-q svg {
-            transform: rotate(45deg);
-        }
-
-        .faq-a {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
-        }
-
-        .faq-item.open .faq-a {
-            max-height: 220px;
-        }
-
-        .faq-a p {
-            padding: 0 4px 22px;
+        .gloss-item dd {
+            margin: 0;
+            font-size: 0.87rem;
             color: var(--ink-soft);
-            font-size: 0.95rem;
-            max-width: 64ch;
+            font-family: var(--font-body);
         }
 
-        /* ---------- Final CTA ---------- */
-        .final-cta {
-            background: var(--ink);
-            color: var(--paper);
-            border-radius: var(--radius-lg);
-            padding: 64px 48px;
-            text-align: center;
+        footer {
+            padding: 36px 44px;
+            border-top: 1px solid var(--line);
+            color: var(--ink-soft);
+            font-size: 0.85rem;
+            max-width: 800px;
         }
 
         @media (max-width:640px) {
-            .final-cta {
-                padding: 44px 24px;
+            footer {
+                padding: 28px 22px;
             }
-        }
-
-        .final-cta h2 {
-            color: var(--paper);
-            font-size: clamp(1.6rem, 3.4vw, 2.2rem);
-        }
-
-        .final-cta p {
-            color: #b9c2d1;
-            margin-top: 14px;
-            font-size: 1.05rem;
-        }
-
-        .final-cta .hero-ctas {
-            justify-content: center;
-            margin-top: 30px;
-        }
-
-        .final-cta .btn-ghost {
-            border-color: #3c4a63;
-            color: var(--paper);
-        }
-
-        .final-cta .btn-ghost:hover {
-            border-color: var(--paper);
-        }
-
-        /* ---------- Footer ---------- */
-        footer {
-            border-top: 1px solid var(--grid-line);
-            padding: 56px 0 28px;
-        }
-
-        .footer-top {
-            display: grid;
-            grid-template-columns: 1.4fr repeat(3, 1fr);
-            gap: 32px;
-            margin-bottom: 48px;
-        }
-
-        @media (max-width:760px) {
-            .footer-top {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-
-        .footer-brand p {
-            margin-top: 14px;
-            color: var(--ink-soft);
-            font-size: 0.92rem;
-            max-width: 32ch;
-        }
-
-        .footer-col h4 {
-            font-family: var(--font-mono);
-            font-size: 0.82rem;
-            color: var(--ink-soft);
-            margin-bottom: 16px;
-            font-weight: 400;
-        }
-
-        .footer-col ul {
-            list-style: none;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-
-        .footer-col a {
-            text-decoration: none;
-            font-size: 0.92rem;
-            color: var(--ink);
-        }
-
-        .footer-col a:hover {
-            color: var(--accent);
-        }
-
-        .footer-bottom {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
-            padding-top: 24px;
-            border-top: 1px solid var(--grid-line);
-            font-size: 0.85rem;
-            color: var(--ink-soft);
-        }
-
-        .socials {
-            display: flex;
-            gap: 14px;
-        }
-
-        .socials a {
-            width: 36px;
-            height: 36px;
-            border-radius: 8px;
-            border: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .socials a:hover {
-            border-color: var(--accent);
-            color: var(--accent);
         }
     </style>
 </head>
 
 <body>
 
-    <header class="nav" id="siteNav">
-        <div class="nav-inner">
-            <a href="#top" class="logo"><span class="brackets">[</span>índice<span class="brackets">0]</span></a>
-            <nav>
-                <ul class="nav-links">
-                    <li><a href="#conteudo">Conteúdo</a></li>
-                    <li><a href="#como-funciona">Como funciona</a></li>
-                    <li><a href="#planos">Planos</a></li>
-                    <li><a href="#depoimentos">Depoimentos</a></li>
-                    <li><a href="#faq">FAQ</a></li>
-                </ul>
+    <div class="topbar">
+        <span class="topbar-title">C — Repetição &amp; Vetores</span>
+        <button class="menu-btn" id="menuBtn" aria-label="Abrir sumário" aria-expanded="false">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+                <line x1="4" y1="7" x2="20" y2="7" />
+                <line x1="4" y1="12" x2="20" y2="12" />
+                <line x1="4" y1="17" x2="20" y2="17" />
+            </svg>
+        </button>
+    </div>
+
+    <div class="shell">
+
+        <aside class="sidenav" id="sideNav">
+            <div class="brand"><span class="shape-brace">{ }</span><span class="label">C — Repetição &amp;
+                    Vetores</span></div>
+            <nav class="toc">
+                <span class="toc-group-label">Repetição</span>
+                <a href="#intro">Visão geral</a>
+                <a href="#while">while e break</a>
+                <a href="#for">O laço for</a>
+                <a href="#trace">Executando na mão</a>
+                <span class="toc-group-label">Vetores</span>
+                <a href="#vetores">O que é um vetor</a>
+                <a href="#declaracao">Declaração e inicialização</a>
+                <a href="#indices">Índices e limites</a>
+                <a href="#laços-vetores">Vetores com laços</a>
+                <a href="#validacao">Validando acesso (OK/NOK)</a>
+                <span class="toc-group-label">Praticar</span>
+                <a href="#erros">Erros comuns</a>
+                <a href="#exercicios">Exercícios</a>
+                <a href="#glossario">Glossário</a>
             </nav>
-            <div class="nav-right">
-                <a href="#planos" class="btn btn-ghost">Ver planos</a>
-                <button class="burger" id="burgerBtn" aria-label="Abrir menu" aria-expanded="false">
-                    <span class="burger-icon"><span></span><span></span><span></span></span>
-                </button>
-            </div>
-        </div>
-    </header>
+        </aside>
 
-    <main id="top">
-
-        <!-- HERO -->
-        <section class="hero">
-            <div class="wrap hero-grid">
-                <div>
-                    <span class="eyebrow-mark">
-                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2.5">
-                            <polyline points="20 6 9 17 4 12" />
-                        </svg>
-                        Baseado em questões reais de bancas técnicas
-                    </span>
-                    <h1 class="headline">Domine laços e vetores <span class="accent-word">antes da prova</span></h1>
-                    <p class="sub">Um curso direto ao ponto sobre comandos de repetição e vetores em linguagem C, com
-                        resumos objetivos e centenas de questões comentadas, no mesmo estilo que aparece em provas
-                        técnicas.</p>
-                    <div class="hero-ctas">
-                        <a href="#planos" class="btn btn-primary">Começar agora</a>
-                        <a href="#conteudo" class="btn btn-ghost">Ver questão de exemplo</a>
-                    </div>
-                    <p class="trust-line">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                            stroke-width="2">
-                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
-                            <circle cx="9" cy="7" r="4" />
-                            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
-                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
-                        </svg>
-                        Mais de 1.200 pessoas revisando lógica de programação toda semana
-                    </p>
+        <main>
+            <div class="hero" id="intro">
+                <p class="subtitle">Prof. Chen — resumo de aula</p>
+                <h1>Comandos de Repetição &amp; Vetores em Linguagem C</h1>
+                <p class="lead">De <code>while</code> e <code>for</code> até vetores indexados: a base de quase toda
+                    pegadinha de prova envolvendo lógica em C.</p>
+                <div class="legend">
+                    <span class="legend-chip" data-kind="loop"><span class="lg-dot"></span>Controle de laço</span>
+                    <span class="legend-chip" data-kind="idx"><span class="lg-dot"></span>Índice / vetor</span>
+                    <span class="legend-chip" data-kind="ok"><span class="lg-dot"></span>Saída / resultado</span>
                 </div>
+            </div>
 
-                <div class="hero-visual">
-                    <div class="code-card">
-                        <div class="code-card-top">
-                            <span class="dot" style="background:#e0472c"></span>
-                            <span class="dot" style="background:#d9b13a"></span>
-                            <span class="dot" style="background:#1f7a4d"></span>
-                            <span class="filename">questao_38.c</span>
-                        </div>
-                        <pre><span class="kw">int</span> qtp=0, qti=0, nro;
-<span class="kw">while</span> (true){
-    scanf(<span class="cm">"%d"</span>, &nro);
-    <span class="kw">if</span>(nro &lt; 0)
-        <span class="kw">break</span>;
-    <span class="kw">if</span> ((nro % 2)==0)
+            <hr class="divider">
+
+            <section id="while">
+                <h2><span class="num">§</span>while e break</h2>
+                <p>O <code>while</code> executa um bloco <strong>enquanto</strong> a condição for verdadeira, testando-a
+                    <strong>antes</strong> de cada repetição. Combinado com <code>while (true)</code>, cria-se um laço
+                    infinito que só termina quando um <code>break</code> interno é executado — útil quando a condição de
+                    parada só é conhecida durante a execução, como um valor digitado pelo usuário.</p>
+                <div class="code-card">
+                    <div class="code-card-top">
+                        <span class="dot" style="background:var(--warn)"></span>
+                        <span class="dot" style="background:var(--idx)"></span>
+                        <span class="dot" style="background:var(--ok)"></span>
+                        <span class="filename">questao_38.c</span>
+                    </div>
+                    <pre><span class="tok tok-idx">int</span> qtp=0, qti=0, nro;
+<span class="tok tok-loop">while</span> (true){
+    scanf(<span class="tok">"%d"</span>, &nro);
+    <span class="tok tok-loop">if</span>(nro &lt; 0)
+        <span class="tok tok-loop">break</span>;
+    <span class="tok tok-loop">if</span> ((nro % 2)==0)
         qtp++;
-    <span class="kw">else</span>
+    <span class="tok tok-loop">else</span>
         qti++;
 }</pre>
-                        <div class="code-out">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2.5">
-                                <polyline points="20 6 9 17 4 12" />
-                            </svg>
-                            entrada 2,0,7,8,9,1,-2 → qtp=3, qti=3
-                        </div>
-                    </div>
+                    <div class="code-out tok tok-ok">entrada 2, 0, 7, 8, 9, 1, -2 → qtp=3, qti=3 (o -2 causa o break e
+                        não é contado)</div>
                 </div>
-            </div>
-        </section>
+                <p style="margin-top:18px;"><strong>Ponto-chave:</strong> o número que provoca o <code>break</code>
+                    normalmente <strong>não é processado</strong> pelas instruções seguintes dentro do laço — ele só
+                    serve para encerrar a repetição.</p>
+            </section>
 
-        <!-- PROBLEMA -->
-        <section id="conteudo">
-            <div class="wrap">
-                <div class="section-head">
-                    <span class="kicker">// onde a maioria perde pontos</span>
-                    <h2>Três erros que aparecem em quase toda prova</h2>
-                    <p>Você entende a teoria — mas sob o cronômetro, os mesmos deslizes se repetem. Reconhece algum
-                        destes?</p>
-                </div>
-                <div class="problem-list">
-                    <div class="problem-card">
-                        <div class="mark">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <rect x="3" y="3" width="18" height="18" rx="2" />
-                                <line x1="9" y1="3" x2="9" y2="21" />
-                            </svg>
-                        </div>
-                        <h3>Índice fora do intervalo</h3>
-                        <p>Você sabe que um vetor de tamanho 10 vai de <code>vet[0]</code> a <code>vet[9]</code> — mas
-                            sob pressão, ainda marca <code>vet[10]</code> como válido.</p>
+            <section id="for">
+                <h2><span class="num">§</span>O laço for</h2>
+                <p>Estrutura compacta para repetições com número definido de execuções. Reúne em uma linha três partes
+                    independentes:</p>
+                <div class="loop-anatomy">
+                    <div class="loop-parts">
+                        <span class="loop-part init">i = 0</span>
+                        <span style="color:var(--ink-soft);">;</span>
+                        <span class="loop-part cond">i &lt; n</span>
+                        <span style="color:var(--ink-soft);">;</span>
+                        <span class="loop-part incr">i++</span>
                     </div>
-                    <div class="problem-card">
-                        <div class="mark">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M17 1l4 4-4 4" />
-                                <path d="M3 11V9a4 4 0 0 1 4-4h14" />
-                                <path d="M7 23l-4-4 4-4" />
-                                <path d="M21 13v2a4 4 0 0 1-4 4H3" />
-                            </svg>
-                        </div>
-                        <h3>Limite errado no laço</h3>
-                        <p>Trocar <code>i &lt; n</code> por <code>i &lt;= n</code> muda o número de repetições — e
-                            derruba a resposta inteira sem você perceber.</p>
-                    </div>
-                    <div class="problem-card">
-                        <div class="mark">
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2">
-                                <path d="M12 9v4" />
-                                <path d="M12 17h.01" />
-                                <path
-                                    d="M10.29 3.86 1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z" />
-                            </svg>
-                        </div>
-                        <h3>Vetor não inicializado</h3>
-                        <p>Esquecer que um vetor sem valores atribuídos guarda "lixo de memória" é a pegadinha clássica
-                            das alternativas de múltipla escolha.</p>
+                    <div class="loop-labels">
+                        <span><span class="ll-dot" style="background:var(--ok);"></span>inicialização — roda 1 vez,
+                            antes do laço</span>
+                        <span><span class="ll-dot" style="background:var(--kw);"></span>condição — testada antes de cada
+                            repetição</span>
+                        <span><span class="ll-dot" style="background:var(--idx);"></span>incremento — roda ao fim de
+                            cada repetição</span>
                     </div>
                 </div>
-            </div>
-        </section>
+                <p style="margin-top:20px;"><strong>Pegadinha clássica:</strong> <code>i &lt; n</code> executa
+                    <code>n</code> vezes (de 0 a n-1); já <code>i &lt;= n</code> executa <code>n+1</code> vezes. Trocar
+                    um pelo outro muda toda a resposta.</p>
+            </section>
 
-        <!-- FEATURES -->
-        <section class="features">
-            <div class="wrap">
-                <div class="section-head">
-                    <span class="kicker">// como resolvemos isso</span>
-                    <h2>Tudo o que você precisa para não errar de novo</h2>
-                    <p>Seis frentes de estudo pensadas para quem precisa transformar teoria em acerto na hora da prova.
+            <section id="trace">
+                <h2><span class="num">§</span>Executando na mão — soma dos pares</h2>
+                <p>Uma forma segura de não errar em prova é simular o laço linha a linha. Para o trecho abaixo:</p>
+                <div class="code-card">
+                    <div class="code-card-top">
+                        <span class="dot" style="background:var(--warn)"></span><span class="dot"
+                            style="background:var(--idx)"></span><span class="dot" style="background:var(--ok)"></span>
+                        <span class="filename">questao_45.c</span>
+                    </div>
+                    <pre><span class="tok tok-idx">int</span> v[5] = {2, 4, 6, 8, 10};
+<span class="tok tok-idx">int</span> i, sum = 0;
+<span class="tok tok-loop">for</span> (i = 0; i &lt; 3; i++) {
+    sum += v[i];
+}</pre>
+                </div>
+                <div class="table-wrap">
+                    <table class="trace-table">
+                        <thead>
+                            <tr>
+                                <th>i</th>
+                                <th>condição i&lt;3</th>
+                                <th>v[i]</th>
+                                <th>sum</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>0</td>
+                                <td>verdadeira</td>
+                                <td>2</td>
+                                <td>2</td>
+                            </tr>
+                            <tr>
+                                <td>1</td>
+                                <td>verdadeira</td>
+                                <td>4</td>
+                                <td>6</td>
+                            </tr>
+                            <tr>
+                                <td>2</td>
+                                <td>verdadeira</td>
+                                <td>6</td>
+                                <td>12</td>
+                            </tr>
+                            <tr>
+                                <td>3</td>
+                                <td class="exit-row">falsa — sai do laço</td>
+                                <td>—</td>
+                                <td>12</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p style="margin-top:16px;">Resultado: <code>Sum = 12</code>. Os elementos <code>v[3]=8</code> e
+                    <code>v[4]=10</code> nunca são visitados, porque a condição corta o laço em <code>i=3</code>.</p>
+            </section>
+
+            <hr class="divider">
+
+            <section id="vetores">
+                <h2><span class="num">§</span>O que é um vetor</h2>
+                <p>Uma <strong>variável dimensionada</strong> (ou <strong>vetor</strong>) é uma estrutura que armazena
+                    <strong>vários conteúdos do mesmo tipo</strong> em posições de memória contíguas, acessados por um
+                    <strong>índice</strong>. Diferente de uma variável comum — que guarda um único valor por vez — um
+                    vetor guarda vários valores simultaneamente.</p>
+                <p>Toda variável dimensionada tem quatro propriedades: <strong>nome</strong>, <strong>tipo</strong>,
+                    <strong>conteúdo</strong> e <strong>quantidade de conteúdo</strong>.</p>
+            </section>
+
+            <section id="declaracao">
+                <h2><span class="num">§</span>Declaração e inicialização</h2>
+                <div class="table-wrap">
+                    <table class="decl-table">
+                        <thead>
+                            <tr>
+                                <th>Forma</th>
+                                <th>Efeito</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>int v[5] = {10,20,30,40,50};</code></td>
+                                <td>Todos os 5 elementos definidos explicitamente</td>
+                            </tr>
+                            <tr>
+                                <td><code>int v[5] = {20,10};</code></td>
+                                <td>Elementos não citados (v[2], v[3], v[4]) viram <strong>0</strong> automaticamente
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><code>int v[100] = {0};</code></td>
+                                <td>Forma comum de zerar um vetor inteiro</td>
+                            </tr>
+                            <tr>
+                                <td><code>int v[] = {5,10,15,20};</code></td>
+                                <td>Tamanho <strong>inferido automaticamente</strong> pelo compilador — nesse caso, 4
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><code>int v[5];</code></td>
+                                <td>Sem inicialização — conteúdo é <strong>lixo de memória</strong></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="indices">
+                <h2><span class="num">§</span>Índices e limites</h2>
+                <p>Em C, os índices <strong>sempre começam em 0</strong>. Para um vetor de tamanho <code>N</code>, os
+                    índices válidos vão de <code>0</code> até <code>N-1</code> — não existe ajuste automático para
+                    índices fora desse intervalo.</p>
+                <div class="index-bar">
+                    <div class="cells">
+                        <div class="cell tok tok-idx"><span class="cell-idx">[0]</span><span
+                                class="cell-val">-100</span></div>
+                        <div class="cell tok tok-idx"><span class="cell-idx">[1]</span><span class="cell-val">100</span>
+                        </div>
+                        <div class="cell tok tok-idx"><span class="cell-idx">[2]</span><span class="cell-val">20</span>
+                        </div>
+                        <div class="cell tok tok-idx"><span class="cell-idx">[3]</span><span class="cell-val">-50</span>
+                        </div>
+                        <div class="cell tok tok-idx"><span class="cell-idx">[4]</span><span class="cell-val">0</span>
+                        </div>
+                        <div class="cell invalid tok"><span class="cell-idx">[5]</span><span class="cell-val">?</span>
+                        </div>
+                    </div>
+                    <p class="cells-caption"><code>int numbers[5]</code> — índices válidos de <strong>0 a 4</strong>.
+                        <code>numbers[5]</code> está fora do vetor: comportamento indefinido, não erro de compilação.
                     </p>
                 </div>
-                <div class="feature-grid" id="featureGrid">
-                    <div class="feature-item">
-                        <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2">
-                                <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
-                                <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
-                            </svg></div>
-                        <h3>Trilha por tópico</h3>
-                        <p>Laços, vetores, matrizes e ponteiros organizados em ordem de dificuldade — comece pelo que te
-                            derruba com mais frequência.</p>
-                    </div>
-                    <div class="feature-item">
-                        <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2">
-                                <circle cx="11" cy="11" r="8" />
-                                <line x1="21" y1="21" x2="16.65" y2="16.65" />
-                            </svg></div>
-                        <h3>Banco de questões comentadas</h3>
-                        <p>Centenas de questões no estilo de bancas como FGV, Cebraspe, FCC e Vunesp, com explicação
-                            linha a linha do código.</p>
-                    </div>
-                    <div class="feature-item">
-                        <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2">
-                                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
-                                <polyline points="14 2 14 8 20 8" />
-                                <line x1="16" y1="13" x2="8" y2="13" />
-                                <line x1="16" y1="17" x2="8" y2="17" />
-                            </svg></div>
-                        <h3>Resumos teóricos objetivos</h3>
-                        <p>Sem enrolação: só a teoria que realmente cai, com exemplos de código prontos para revisar em
-                            poucos minutos.</p>
-                    </div>
-                    <div class="feature-item">
-                        <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2">
-                                <polyline points="20 6 9 17 4 12" />
-                            </svg></div>
-                        <h3>Quizzes com correção imediata</h3>
-                        <p>Cada erro vem com a explicação do porquê — não só da resposta certa, mas de onde o raciocínio
-                            desviou.</p>
-                    </div>
-                    <div class="feature-item">
-                        <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2">
-                                <circle cx="12" cy="12" r="10" />
-                                <polyline points="12 6 12 12 16 14" />
-                            </svg></div>
-                        <h3>Simulados cronometrados</h3>
-                        <p>Treine sob a mesma pressão de tempo da prova real, com questões misturadas de todos os
-                            tópicos estudados.</p>
-                    </div>
-                    <div class="feature-item">
-                        <div class="ico"><svg width="22" height="22" viewBox="0 0 24 24" fill="none"
-                                stroke="currentColor" stroke-width="2">
-                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
-                            </svg></div>
-                        <h3>Tira-dúvidas com monitor</h3>
-                        <p>Travou num trecho de código? Poste a dúvida e receba resposta de quem já corrigiu centenas de
-                            questões parecidas.</p>
-                    </div>
-                </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- COMO FUNCIONA -->
-        <section id="como-funciona">
-            <div class="wrap">
-                <div class="section-head">
-                    <span class="kicker">// como funciona</span>
-                    <h2>Três passos, do resumo ao acerto</h2>
+            <section id="laços-vetores">
+                <h2><span class="num">§</span>Vetores com laços</h2>
+                <p>Vetores quase sempre são manipulados junto de laços — para ler, processar ou exibir todos os
+                    elementos. Dois padrões aparecem o tempo todo:</p>
+                <div class="code-card">
+                    <div class="code-card-top"><span class="dot" style="background:var(--warn)"></span><span class="dot"
+                            style="background:var(--idx)"></span><span class="dot"
+                            style="background:var(--ok)"></span><span class="filename">leitura.c</span></div>
+                    <pre><span class="tok tok-loop">for</span> (i = 0; i &lt; tamanho; i++) {
+    scanf(<span class="tok">"%d"</span>, &v[i]);
+}</pre>
                 </div>
-                <div class="steps">
-                    <div class="step">
-                        <span class="num">01</span>
-                        <h3>Escolha o tópico</h3>
-                        <p>Comece por comandos de repetição, vetores, ou vá direto ao ponto onde mais costuma errar.</p>
-                    </div>
-                    <div class="step">
-                        <span class="num">02</span>
-                        <h3>Estude e resolva</h3>
-                        <p>Leia o resumo teórico curto e já emende para questões reais no mesmo tema — sem intervalo
-                            entre teoria e prática.</p>
-                    </div>
-                    <div class="step">
-                        <span class="num">03</span>
-                        <h3>Revise os erros</h3>
-                        <p>Veja a explicação linha a linha do código e refaça a questão até acertar sem hesitar.</p>
-                    </div>
+                <div class="code-card" style="margin-top:14px;">
+                    <div class="code-card-top"><span class="dot" style="background:var(--warn)"></span><span class="dot"
+                            style="background:var(--idx)"></span><span class="dot"
+                            style="background:var(--ok)"></span><span class="filename">soma_pares.c</span></div>
+                    <pre><span class="tok tok-loop">for</span> (i = 0; i &lt; tamanho; i++) {
+    <span class="tok tok-loop">if</span> ((v[i] % 2) == 0) {
+        soma += v[i];
+    }
+}</pre>
+                    <div class="code-out tok tok-ok">Como v[i]=i neste caso, pode-se trocar por: for (i=0; i&lt;10;
+                        i+=2) soma += v[i];</div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- DEPOIMENTOS -->
-        <section class="testimonials" id="depoimentos">
-            <div class="wrap">
-                <div class="section-head">
-                    <span class="kicker">// quem já passou por isso</span>
-                    <h2>Resultado de quem revisou até não errar mais</h2>
+            <section id="validacao">
+                <h2><span class="num">§</span>Validando acesso a vetores (OK / NOK)</h2>
+                <p>Dado <code>int a, d, num[100]; float b; char c[100];</code> — quais operações são válidas?</p>
+                <div class="table-wrap">
+                    <table class="oknok-table">
+                        <thead>
+                            <tr>
+                                <th>Operação</th>
+                                <th>Status</th>
+                                <th>Motivo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><code>num[0] = a - 200;</code></td>
+                                <td><span class="tag-ok">OK</span></td>
+                                <td>Atribuição válida entre inteiros</td>
+                            </tr>
+                            <tr>
+                                <td><code>c[5] = 5;</code></td>
+                                <td><span class="tag-nok">NOK</span></td>
+                                <td>Tipos incompatíveis (char recebendo int)</td>
+                            </tr>
+                            <tr>
+                                <td><code>num = b[2];</code></td>
+                                <td><span class="tag-nok">NOK</span></td>
+                                <td><code>num</code> é vetor — não recebe atribuição direta; <code>b</code> não é vetor
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><code>a = num[d];</code></td>
+                                <td><span class="tag-ok">OK</span></td>
+                                <td>Válido se <code>d</code> estiver entre 0 e 99</td>
+                            </tr>
+                            <tr>
+                                <td><code>b = num[10]+num[20]+30;</code></td>
+                                <td><span class="tag-ok">OK</span></td>
+                                <td>Operação aritmética válida</td>
+                            </tr>
+                            <tr>
+                                <td><code>num[30] = num[80]+b;</code></td>
+                                <td><span class="tag-nok">NOK</span></td>
+                                <td>Mistura de tipos sem conversão explícita</td>
+                            </tr>
+                        </tbody>
+                    </table>
                 </div>
-                <div class="t-grid">
-                    <div class="t-card">
-                        <p class="quote">"Refazer as questões de vetor até não errar mais foi o que fez diferença na
-                            minha prova. O erro de índice, que sempre me pegava, parou de acontecer."</p>
-                        <div class="author">
-                            <div class="avatar">RM</div>
-                            <div><strong>Rafaela M.</strong><span>Aprovada em concurso de Analista de TI</span></div>
-                        </div>
-                    </div>
-                    <div class="t-card">
-                        <p class="quote">"Eu confundia o limite do for direto. Depois de treinar com os simulados
-                            cronometrados, isso simplesmente parou de acontecer."</p>
-                        <div class="author">
-                            <div class="avatar">DS</div>
-                            <div><strong>Diego S.</strong><span>Estudante de Ciência da Computação</span></div>
-                        </div>
-                    </div>
-                    <div class="t-card">
-                        <p class="quote">"Os resumos são curtos o suficiente pra revisar no intervalo do trabalho, e as
-                            questões comentadas explicam exatamente onde eu errava."</p>
-                        <div class="author">
-                            <div class="avatar">CT</div>
-                            <div><strong>Camila T.</strong><span>Aprovada em concurso técnico</span></div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- PRICING -->
-        <section id="planos">
-            <div class="wrap">
-                <div class="section-head">
-                    <span class="kicker">// planos</span>
-                    <h2>Escolha o ritmo do seu estudo</h2>
-                    <p>Comece de graça e avance para o plano completo quando quiser treinar sob o tempo real da prova.
-                    </p>
-                </div>
-                <div class="pricing-grid">
-                    <div class="plan">
-                        <h3>Grátis</h3>
-                        <div class="price">R$0</div>
-                        <p class="plan-desc">Para conhecer o método antes de decidir.</p>
-                        <ul>
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="3">
-                                    <polyline points="20 6 9 17 4 12" />
-                                </svg>Resumos teóricos completos</li>
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="3">
-                                    <polyline points="20 6 9 17 4 12" />
-                                </svg>20 questões comentadas por semana</li>
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="3">
-                                    <polyline points="20 6 9 17 4 12" />
-                                </svg>Acesso à comunidade de dúvidas</li>
-                        </ul>
-                        <a href="#" class="btn btn-ghost btn-block">Começar grátis</a>
-                    </div>
-                    <div class="plan featured">
-                        <span class="plan-badge">Mais escolhido</span>
-                        <h3>Essencial</h3>
-                        <div class="price">R$29<span>/mês</span></div>
-                        <p class="plan-desc">Para quem estuda com regularidade toda semana.</p>
-                        <ul>
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="3">
-                                    <polyline points="20 6 9 17 4 12" />
-                                </svg>Banco completo de questões</li>
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="3">
-                                    <polyline points="20 6 9 17 4 12" />
-                                </svg>Quizzes com correção imediata</li>
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="3">
-                                    <polyline points="20 6 9 17 4 12" />
-                                </svg>Trilha completa por tópico</li>
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="3">
-                                    <polyline points="20 6 9 17 4 12" />
-                                </svg>Tira-dúvidas com monitor</li>
-                        </ul>
-                        <a href="#" class="btn btn-primary btn-block">Começar agora</a>
-                    </div>
-                    <div class="plan">
-                        <h3>Completo</h3>
-                        <div class="price">R$49<span>/mês</span></div>
-                        <p class="plan-desc">Para quem está na reta final antes da prova.</p>
-                        <ul>
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="3">
-                                    <polyline points="20 6 9 17 4 12" />
-                                </svg>Tudo do plano Essencial</li>
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="3">
-                                    <polyline points="20 6 9 17 4 12" />
-                                </svg>Simulados cronometrados ilimitados</li>
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="3">
-                                    <polyline points="20 6 9 17 4 12" />
-                                </svg>Relatório de erros por tópico</li>
-                            <li><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                    stroke-width="3">
-                                    <polyline points="20 6 9 17 4 12" />
-                                </svg>Mentoria em grupo quinzenal</li>
-                        </ul>
-                        <a href="#" class="btn btn-ghost btn-block">Assinar Completo</a>
-                    </div>
-                </div>
-            </div>
-        </section>
+            <hr class="divider">
 
-        <!-- FAQ -->
-        <section id="faq">
-            <div class="wrap">
-                <div class="section-head" style="margin-left:auto;margin-right:auto;text-align:left;">
-                    <span class="kicker">// perguntas frequentes</span>
-                    <h2>Ainda com dúvidas?</h2>
-                </div>
-                <div class="faq" id="faqList">
-                    <div class="faq-item open">
-                        <button class="faq-q">Preciso saber programar antes de começar?
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2.5">
-                                <line x1="12" y1="5" x2="12" y2="19" />
-                                <line x1="5" y1="12" x2="19" y2="12" />
-                            </svg>
-                        </button>
-                        <div class="faq-a">
-                            <p>Não. A trilha começa pelos fundamentos — variáveis, laços e vetores — antes de avançar
-                                para tópicos mais complexos como ponteiros e matrizes.</p>
-                        </div>
+            <section id="erros">
+                <h2><span class="num">§</span>Erros conceituais mais cobrados</h2>
+                <div class="warn-grid">
+                    <div class="warn-card">
+                        <h3>Índice começando em 1</h3>
+                        <p>Índices de vetor sempre começam em <strong>0</strong>. Para <code>int vet[n];</code>, o
+                            último elemento válido é <code>vet[n-1]</code>, nunca <code>vet[n]</code>.</p>
                     </div>
-                    <div class="faq-item">
-                        <button class="faq-q">As questões seguem alguma banca específica?
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2.5">
-                                <line x1="12" y1="5" x2="12" y2="19" />
-                                <line x1="5" y1="12" x2="19" y2="12" />
-                            </svg>
-                        </button>
-                        <div class="faq-a">
-                            <p>O banco de questões cobre o estilo mais comum em provas técnicas de bancas como FGV,
-                                Cebraspe, FCC e Vunesp, focando nos padrões de pegadinha que mais se repetem.</p>
-                        </div>
+                    <div class="warn-card">
+                        <h3>Acesso fora do intervalo "seguro"</h3>
+                        <p>C <strong>não</strong> ajusta automaticamente um índice inválido. O resultado é comportamento
+                            indefinido, não um erro de compilação.</p>
                     </div>
-                    <div class="faq-item">
-                        <button class="faq-q">Funciona pelo celular?
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2.5">
-                                <line x1="12" y1="5" x2="12" y2="19" />
-                                <line x1="5" y1="12" x2="19" y2="12" />
-                            </svg>
-                        </button>
-                        <div class="faq-a">
-                            <p>Sim. A plataforma é totalmente responsiva — resumos e questões podem ser resolvidos no
-                                navegador do celular sem perder formatação.</p>
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <button class="faq-q">Posso cancelar quando quiser?
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2.5">
-                                <line x1="12" y1="5" x2="12" y2="19" />
-                                <line x1="5" y1="12" x2="19" y2="12" />
-                            </svg>
-                        </button>
-                        <div class="faq-a">
-                            <p>Sim, sem multa e sem burocracia. O acesso continua ativo até o fim do período já pago.
-                            </p>
-                        </div>
-                    </div>
-                    <div class="faq-item">
-                        <button class="faq-q">Vocês cobrem outras linguagens além de C?
-                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                stroke-width="2.5">
-                                <line x1="12" y1="5" x2="12" y2="19" />
-                                <line x1="5" y1="12" x2="19" y2="12" />
-                            </svg>
-                        </button>
-                        <div class="faq-a">
-                            <p>Hoje o foco é 100% em C, justamente por ser a linguagem mais cobrada em provas de lógica
-                                de programação. Outras linguagens estão nos planos futuros.</p>
-                        </div>
+                    <div class="warn-card">
+                        <h3>Vetor sem inicialização</h3>
+                        <p>Um vetor declarado sem valores contém <strong>lixo de memória</strong> — ler esse conteúdo
+                            produz resultados imprevisíveis.</p>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-        <!-- FINAL CTA -->
-        <section>
-            <div class="wrap">
-                <div class="final-cta">
-                    <h2>Pronto para acertar a próxima questão de vetor?</h2>
-                    <p>Comece de graça hoje e sinta a diferença na primeira lista de questões.</p>
-                    <div class="hero-ctas">
-                        <a href="#planos" class="btn btn-primary">Começar agora</a>
-                        <a href="#faq" class="btn btn-ghost">Tirar dúvidas</a>
+            <section id="exercicios">
+                <h2><span class="num">§</span>Exercícios propostos</h2>
+                <div class="exercise-list">
+                    <div class="exercise-card">
+                        <span class="ex-num">Exercício — soma dos n primeiros</span>
+                        <p>Faça um programa em C que leia <code>n</code>, calcule e imprima a soma dos n primeiros
+                            inteiros, começando em 0 e terminando em n.</p>
+                        <pre><span class="tok tok-idx">int</span> i, n, soma=0;
+scanf(<span class="tok">"%d"</span>, &n);
+<span class="tok tok-loop">for</span>(i=0;i&lt;=n;i++){
+    soma += i;
+}</pre>
+                    </div>
+                    <div class="exercise-card">
+                        <span class="ex-num">Exercício — pares e ímpares</span>
+                        <p>Leia inteiros positivos até que o usuário digite um número negativo. Ao final, imprima
+                            quantos números pares e quantos ímpares foram digitados.</p>
+                        <p class="exercise-answer">Entrada: 9, 8, 6, 3, 4, -1 → Qtde par = 3, Qtde impar = 2</p>
+                    </div>
+                    <div class="exercise-card">
+                        <span class="ex-num">Exercício — vetor invertido</span>
+                        <p>Leia 3 valores em um vetor e imprima-os em ordem inversa, usando um laço decrescente.</p>
+                        <p class="exercise-answer">Entrada: 10, -20, 30 → Vector values: 30 -20 10</p>
                     </div>
                 </div>
-            </div>
-        </section>
+            </section>
 
-    </main>
+            <section id="glossario">
+                <h2><span class="num">§</span>Glossário rápido</h2>
+                <dl class="glossary-grid">
+                    <div class="gloss-item">
+                        <dt>while</dt>
+                        <dd>Repete enquanto a condição for verdadeira; teste no início do laço.</dd>
+                    </div>
+                    <div class="gloss-item">
+                        <dt>for</dt>
+                        <dd>Repete com contador definido: inicialização + condição + incremento.</dd>
+                    </div>
+                    <div class="gloss-item">
+                        <dt>break</dt>
+                        <dd>Interrompe o laço mais interno imediatamente.</dd>
+                    </div>
+                    <div class="gloss-item">
+                        <dt>Vetor (array)</dt>
+                        <dd>Variável que armazena múltiplos valores do mesmo tipo, em memória contígua.</dd>
+                    </div>
+                    <div class="gloss-item">
+                        <dt>Índice</dt>
+                        <dd>Posição de um elemento no vetor, sempre começando em 0.</dd>
+                    </div>
+                    <div class="gloss-item">
+                        <dt>Lixo de memória</dt>
+                        <dd>Conteúdo indeterminado de um vetor não inicializado.</dd>
+                    </div>
+                    <div class="gloss-item">
+                        <dt>int v[]</dt>
+                        <dd>Sintaxe onde o compilador infere o tamanho pela quantidade de elementos.</dd>
+                    </div>
+                    <div class="gloss-item">
+                        <dt>Comportamento indefinido</dt>
+                        <dd>Resultado de acessar um índice fora do intervalo válido do vetor.</dd>
+                    </div>
+                </dl>
+            </section>
 
-    <footer>
-        <div class="wrap">
-            <div class="footer-top">
-                <div class="footer-brand">
-                    <a href="#top" class="logo"><span class="brackets">[</span>índice<span
-                            class="brackets">0]</span></a>
-                    <p>Estudo direto ao ponto de lógica de programação em C, para quem precisa acertar na prova.</p>
-                </div>
-                <div class="footer-col">
-                    <h4>Produto</h4>
-                    <ul>
-                        <li><a href="#conteudo">Conteúdo</a></li>
-                        <li><a href="#como-funciona">Como funciona</a></li>
-                        <li><a href="#planos">Planos</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Empresa</h4>
-                    <ul>
-                        <li><a href="#">Sobre</a></li>
-                        <li><a href="#">Contato</a></li>
-                        <li><a href="#">Trabalhe conosco</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Legal</h4>
-                    <ul>
-                        <li><a href="#">Termos de uso</a></li>
-                        <li><a href="#">Privacidade</a></li>
-                    </ul>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <span>© 2026 índice[0]. Todos os direitos reservados.</span>
-                <div class="socials">
-                    <a href="#" aria-label="Instagram"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2">
-                            <rect x="2" y="2" width="20" height="20" rx="5" />
-                            <circle cx="12" cy="12" r="4" />
-                            <line x1="17.5" y1="6.5" x2="17.5" y2="6.5" />
-                        </svg></a>
-                    <a href="#" aria-label="LinkedIn"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2">
-                            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
-                            <rect x="2" y="9" width="4" height="12" />
-                            <circle cx="4" cy="4" r="2" />
-                        </svg></a>
-                    <a href="#" aria-label="YouTube"><svg width="16" height="16" viewBox="0 0 24 24" fill="none"
-                            stroke="currentColor" stroke-width="2">
-                            <path
-                                d="M22.54 6.42a2.78 2.78 0 0 0-1.94-2C18.88 4 12 4 12 4s-6.88 0-8.6.46a2.78 2.78 0 0 0-1.94 2A29 29 0 0 0 1 11.75a29 29 0 0 0 .46 5.33A2.78 2.78 0 0 0 3.4 19c1.72.46 8.6.46 8.6.46s6.88 0 8.6-.46a2.78 2.78 0 0 0 1.94-2 29 29 0 0 0 .46-5.25 29 29 0 0 0-.46-5.33z" />
-                            <polygon points="9.75 15.02 15.5 11.75 9.75 8.48 9.75 15.02" />
-                        </svg></a>
-                </div>
-            </div>
-        </div>
-    </footer>
+            <footer>
+                Resumo elaborado a partir do material "Comandos de Repetições" e "Tipos de Dados e Variáveis /
+                Estruturas de Dados em Linguagem C", Prof. Chen.
+            </footer>
+        </main>
+    </div>
 
     <script>
-        // Mobile menu toggle
-        const nav = document.getElementById('siteNav');
-        const burgerBtn = document.getElementById('burgerBtn');
-        burgerBtn.addEventListener('click', () => {
-            const isOpen = nav.classList.toggle('open');
-            burgerBtn.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+        const menuBtn = document.getElementById('menuBtn');
+        const sideNav = document.getElementById('sideNav');
+        menuBtn.addEventListener('click', () => {
+            const open = sideNav.classList.toggle('open');
+            menuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
         });
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.addEventListener('click', () => {
-                nav.classList.remove('open');
-                burgerBtn.setAttribute('aria-expanded', 'false');
+        document.querySelectorAll('.toc a').forEach(a => {
+            a.addEventListener('click', () => {
+                sideNav.classList.remove('open');
+                menuBtn.setAttribute('aria-expanded', 'false');
             });
         });
 
-        // FAQ accordion
-        document.querySelectorAll('.faq-item').forEach(item => {
-            item.querySelector('.faq-q').addEventListener('click', () => {
-                const willOpen = !item.classList.contains('open');
-                document.querySelectorAll('.faq-item').forEach(i => i.classList.remove('open'));
-                if (willOpen) item.classList.add('open');
-            });
-        });
+        const sections = document.querySelectorAll('main section, main .hero');
+        const links = document.querySelectorAll('.toc a');
+        const byId = {};
+        links.forEach(l => byId[l.getAttribute('href').slice(1)] = l);
 
-        // Staggered reveal for feature cards
         try {
-            const items = document.querySelectorAll('.feature-item');
             const observer = new IntersectionObserver((entries) => {
-                entries.forEach((entry, order) => {
+                entries.forEach(entry => {
+                    const link = byId[entry.target.id];
+                    if (!link) return;
                     if (entry.isIntersecting) {
-                        const idx = Array.from(items).indexOf(entry.target);
-                        entry.target.style.transitionDelay = (idx % 3) * 90 + 'ms';
-                        entry.target.classList.add('visible');
-                        observer.unobserve(entry.target);
+                        links.forEach(l => l.classList.remove('active'));
+                        link.classList.add('active');
                     }
                 });
-            }, { threshold: 0.15 });
-            items.forEach(el => observer.observe(el));
-        } catch (e) {
-            document.querySelectorAll('.feature-item').forEach(el => el.classList.add('visible'));
+            }, { rootMargin: '-20% 0px -70% 0px' });
+            sections.forEach(s => { if (s.id) observer.observe(s); });
+        } catch (e) { }
+
+        function setHL(kind) {
+            if (kind) document.body.setAttribute('data-hl', kind);
+            else document.body.removeAttribute('data-hl');
         }
+        document.querySelectorAll('.legend-chip').forEach(chip => {
+            chip.addEventListener('mouseenter', () => setHL(chip.dataset.kind));
+            chip.addEventListener('mouseleave', () => setHL(null));
+        });
     </script>
 
 </body>
